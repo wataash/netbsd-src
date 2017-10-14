@@ -237,6 +237,7 @@ CONFIGURATION
                       are traced through use of the sh(1) "-x" flag.
 
                  Default: 2
+                 build.sh -N option
 
      MKCATPAGES  Can be set to "yes" or "no".  Indicates whether preformatted
                  plaintext manual pages will be created during a build.
