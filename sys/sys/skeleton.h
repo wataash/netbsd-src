@@ -35,8 +35,14 @@
  * Definitions for the Skeleton pseudo device.
  *
  */
+// ?
+#if 0
 #include <sys/param.h>
 #include <sys/device.h>
+#endif
+
+// maybe should be:
+#include <sys/ioccom.h>
 
 #ifndef SKEL_H
 #define SKEL_H 1
@@ -47,7 +53,21 @@ struct skeleton_params
     char string[80];
 };
 
-#define SKELTEST _IOW('S', 0x1, struct skeleton_params)
+/*
+ * 332|2222222221111|11111100|00000000
+ * 109|8765432109876|54321098|76543210
+ * 100|0000001010100|01010011|00000001
+ * in  152 (max8191) 'S' 83   0x01
+ */
+
+#define SKELTEST_ _IOW('S', 0x1, struct skeleton_params)
+#define SKELTEST__ _IOC(IOC_IN, 'S', 0x1, sizeof(skeleton_params))
+#define SKELTEST ( \
+    (unsigned long)0x80000000 | \
+    ((sizeof(struct skeleton_params) & IOCPARM_MASK) << IOCPARM_SHIFT) | \
+    ('S' << IOCGROUP_SHIFT) | \
+    0x1 \
+)
 
 #ifdef _KERNEL
 
