@@ -1157,6 +1157,9 @@ pseudo-device	bcsp			# BlueCore Serial Protocol
 pseudo-device	btuart			# Bluetooth HCI UART (H4)
 #pseudo-device	nvmm			# NetBSD Virtual Machine Monitor
 
+# skeleton
+pseudo-device	skeleton
+
 # wscons pseudo-devices
 pseudo-device	wsmux			# mouse & keyboard multiplexor
 pseudo-device	wsfont

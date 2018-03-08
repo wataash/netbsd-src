@@ -1,3 +1,5 @@
+// http://www.jp.netbsd.org/ja/docs/kernel/pseudo/
+
 /*	$NetBSD: pseudo_dev_skel.h,v 1.1 2007/06/09 11:33:50 dsieger Exp $	*/
 
 /*-

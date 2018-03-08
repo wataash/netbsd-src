@@ -1,3 +1,5 @@
+// http://www.jp.netbsd.org/ja/docs/kernel/pseudo/
+
 /*	$NetBSD: pseudo_dev_skel.c,v 1.2 2009/05/21 15:07:41 cube Exp $	*/
 
 /*-
@@ -35,20 +37,24 @@
 #include <sys/ioctl.h>
 #include <sys/device.h>
 #include <sys/conf.h>
-#include <sys/pseudo_dev_skel.h>
+#include <sys/skeleton.h>
 #include <dev/pci/cxgb/cxgb_osdep.h>
-
-// can we use caddr_t?
-// https://github.com/IIJ-NetBSD/netbsd-src/commit/1b50d39
 
 /* Autoconfiguration glue */
 void	skeletonattach(int num);
+#if 0
 int     skeletonopen(dev_t device, int flags, int fmt, struct lwp *process);
 int     skeletonclose(dev_t device, int flags, int fmt, struct lwp *process);
 int     skeletonioctl(dev_t device, u_long command, caddr_t data,
 		      int flags, struct lwp *process);
+#endif
+
+static dev_type_open(skeletonopen);
+static dev_type_close(skeletonclose);
+static dev_type_ioctl(skeletonioctl);
 
 /* just define the character device handlers because that is all we need */
+#if 0
 const struct cdevsw skeleton_cdevsw = {
     skeletonopen,
     skeletonclose,
@@ -60,6 +66,22 @@ const struct cdevsw skeleton_cdevsw = {
     nopoll,
     nommap,
     nokqfilter,
+};
+#endif
+
+const struct cdevsw skeleton_cdevsw = {
+    .d_open = skeletonopen,
+    .d_close = skeletonclose,
+    .d_read = noread,
+    .d_write = nowrite,
+    .d_ioctl = skeletonioctl,
+    .d_stop = nostop,
+    .d_tty = notty,
+    .d_poll = nopoll,
+    .d_mmap = nommap,
+    .d_kqfilter = nokqfilter,
+    .d_discard = nodiscard,
+    .d_flag = D_OTHER,
 };
 
 /*
@@ -99,7 +121,7 @@ skeletonclose(dev_t device, int flags, int fmt, struct lwp *process)
  * Handle the ioctl for the device
  */
 int
-skeletonioctl(dev_t device, u_long command, caddr_t data, int flags,
+skeletonioctl(dev_t device, u_long command, void *data, int flags,
 	      struct lwp *process)
 {
 	int error;

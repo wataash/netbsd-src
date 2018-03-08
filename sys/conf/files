@@ -1496,6 +1496,10 @@ attach	ipmi at ipmibus
 device	dwhdmi: edid, videomode, drmkms, drmkms_i2c
 file	dev/ic/dw_hdmi.c		dwhdmi
 
+# skeleton
+defpseudo skeleton
+file	dev/skeleton.c			skeleton	needs-flag
+
 #
 # File systems
 #

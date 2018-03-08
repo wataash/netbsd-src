@@ -7,6 +7,9 @@
 #
 # Majors 144-159 are reserved for local/vendor use.
 #
+
+device-major skeleton  char 155		   skeleton
+
 # Majors 160-511 are used for the MI drivers.
 
 device-major crypto    char 160		   crypto	single
