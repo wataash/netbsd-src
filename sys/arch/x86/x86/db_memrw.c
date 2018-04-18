@@ -91,7 +91,11 @@ db_read_bytes(vaddr_t addr, size_t size, char *data)
 	src = (char *)addr;
 
 	if (db_validate_address((vaddr_t)src)) {
+#ifdef KGDB
 		db_printf("address %p is invalid\n", src);
+#else
+		printf("address %p is invalid\n", src);
+#endif
 		return;
 	}
 
@@ -112,7 +116,11 @@ db_read_bytes(vaddr_t addr, size_t size, char *data)
 
 	while (size-- > 0) {
 		if (db_validate_address((vaddr_t)src)) {
+#ifdef KGDB
 			db_printf("address %p is invalid\n", src);
+#else
+			printf("address %p is invalid\n", src);
+#endif
 			return;
 		}
 
@@ -145,7 +153,11 @@ db_write_text(vaddr_t addr, size_t size, const char *data)
 		pte = *ppte;
 
 		if ((pte & PG_V) == 0) {
+#ifdef KGDB
 			db_printf(" address %p not a valid page\n", dst);
+#else
+			printf(" address %p not a valid page\n", dst);
+#endif
 			return;
 		}
 
