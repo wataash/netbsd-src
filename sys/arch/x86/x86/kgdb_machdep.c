@@ -93,10 +93,14 @@ kgdb_acc(vaddr_t va, size_t len)
 			pte = kvtopte(va);
 		if ((*pte & PG_V) == 0)
 			return 0;
+#if 0
 		if (*pte & PG_PS)
 			va = (va & PG_LGFRAME) + NBPD_L2;
 		else
 			va += PAGE_SIZE;
+#else
+		va += PAGE_SIZE;
+#endif
 	} while (va < last_va);
 
 	return 1;
