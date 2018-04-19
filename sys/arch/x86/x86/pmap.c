@@ -3103,6 +3103,7 @@ pmap_extract(struct pmap *pmap, vaddr_t va, paddr_t *pap)
 
 	kpreempt_disable();
 	ci = l->l_cpu;
+	// kgdb crash here
 	if (__predict_true(!ci->ci_want_pmapload && ci->ci_pmap == pmap) ||
 	    pmap == pmap_kernel()) {
 		/*
