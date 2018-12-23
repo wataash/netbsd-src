@@ -232,6 +232,7 @@ main(int argc, char **argv)
 	(void)gettimeofday(&boot_time, NULL);
 #endif /* SUPPORT_UTMPX */
 
+#ifndef __APPLE__
 	/* Dispose of random users. */
 	if (getuid() != 0) {
 		errno = EPERM;
@@ -241,6 +242,7 @@ main(int argc, char **argv)
 	/* System V users like to reexec init. */
 	if (getpid() != 1)
 		errx(1, "already running");
+#endif /* __APPLE__ */
 #endif
 
 	/*
@@ -679,8 +681,13 @@ single_user(void)
 		/*
 		 * Start the single user session.
 		 */
+#ifdef __APPLE__
+		if (access("", F_OK) == 0)
+			setctty("");
+#else
 		if (access(_PATH_CONSTTY, F_OK) == 0)
 			setctty(_PATH_CONSTTY);
+#endif
 		else
 			setctty(_PATH_CONSOLE);
 
