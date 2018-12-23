@@ -94,6 +94,7 @@ static void	cmd_ifpriority(const struct command *, int, const char *, char **);
 static void	cmd_ifpathcost(const struct command *, int, const char *, char **);
 static void	cmd_timeout(const struct command *, int, const char *, char **);
 static void	cmd_stp(const struct command *, int, const char *, char **);
+static void	cmd_forward_lldp(const struct command *, int, const char *, char **);
 static void	cmd_ipf(const struct command *, int, const char *, char **);
 
 static const struct command command_table[] = {
@@ -127,6 +128,8 @@ static const struct command command_table[] = {
 	{ "timeout",		1,	0,		cmd_timeout },
 	{ "stp",		1,	0,		cmd_stp },
 	{ "-stp",		1,	CMD_INVERT,	cmd_stp },
+	{ "forwardlldp",	0,	0,		cmd_forward_lldp },
+	{ "-forwardlldp",	0,	CMD_INVERT,	cmd_forward_lldp },
 
         { "ipf",                0,      0,              cmd_ipf },
         { "-ipf",               0,      CMD_INVERT,     cmd_ipf },
@@ -260,6 +263,7 @@ usage(void)
 		"<bridge> discover|-discover <interface>",
 		"<bridge> learn|-learn <interface>",
 		"<bridge> stp|-stp <interface>",
+		"<bridge> forwardlldp|-forwardlldp",
 		"<bridge> maxage <time>",
 		"<bridge> fwddelay <time>",
 		"<bridge> hellotime <time>",
@@ -283,9 +287,12 @@ static int
 is_bridge(const char *bridge)
 {
 
+#ifdef EXEC_ON_APPLE
+#else
 	if (strncmp(bridge, "bridge", 6) != 0 ||
 	    isdigit((unsigned char)bridge[6]) == 0)
 		return (0);
+#endif /* EXEC_ON_APPLE */
 
 	return (1);
 }
@@ -493,12 +500,15 @@ get_val(const char *cp, u_long *valp)
 	char *endptr;
 	u_long val;
 
+#ifdef EXEC_ON_APPLE
+#else /* EXEC_ON_APPLE */
 	errno = 0;
 	val = strtoul(cp, &endptr, 0);
 	if (cp[0] == '\0' || endptr[0] != '\0' || errno == ERANGE)
 		return (-1);
 
 	*valp = val;
+#endif /* EXEC_ON_APPLE */
 	return (0);
 }
 
@@ -621,6 +631,15 @@ cmd_stp(const struct command *cmd, int sock, const char *bridge,
 {
 
 	do_bridgeflag(sock, bridge, argv[0], IFBIF_STP,
+	    (cmd->cmd_flags & CMD_INVERT) ? 0 : 1);
+}
+
+static void
+cmd_forward_lldp(const struct command *cmd, int sock, const char *bridge,
+    char **argv)
+{
+
+	do_bridgeflag(sock, bridge, argv[0], IFBIF_FORWARD_LLDP,
 	    (cmd->cmd_flags & CMD_INVERT) ? 0 : 1);
 }
 
