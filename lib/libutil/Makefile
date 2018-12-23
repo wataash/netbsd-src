@@ -7,6 +7,12 @@ USE_SHLIBDIR=	yes
 
 .include "${NETBSDSRCDIR}/common/lib/libutil/Makefile.inc"
 
+.if ${:!uname -s!} == "Darwin"
+CFLAGS+=	-O0 -ggdb3
+NETBSDSRCDIR=	$${.CORDIR}/../..
+CPPFLAGS+=	-I${NETBSDSRCDIR}/z_compat_apple`
+.endif
+
 WARNS?=	5
 LIB=	util
 CPPFLAGS+=-DLIBC_SCCS -I${.CURDIR}
@@ -43,6 +49,45 @@ YPREFIX=__pd
 .PATH:	${NETBSDSRCDIR}/lib/libc/gen
 
 .include "compat/Makefile.inc"
+
+.if ${:!uname -s!} == "Darwin"
+# ${NETBSDSRCDIR}/common/lib/libutil/Makefile.inc
+SRCS:= ${SRCS:S/proc_compare.c//}
+# this Makefile
+SRCS:= ${SRCS:S/getfstypename.c//}
+SRCS:= ${SRCS:S/getlabelsector.c//}
+SRCS:= ${SRCS:S/getfsspecname.c//}
+SRCS:= ${SRCS:S/getmntopts.c//}
+SRCS:= ${SRCS:S/getrawpartition.c//}
+SRCS:= ${SRCS:S/disklabel_dkcksum.c//}
+SRCS:= ${SRCS:S/disklabel_scan.c//}
+SRCS:= ${SRCS:S/if_media.c//}
+SRCS:= ${SRCS:S/login.c//}
+SRCS:= ${SRCS:S/kinfo_getvmmap.c//}
+SRCS:= ${SRCS:S/loginx.c//}
+SRCS:= ${SRCS:S/login_cap.c//}
+SRCS:= ${SRCS:S/login_tty.c//}
+SRCS:= ${SRCS:S/logout.c//}
+SRCS:= ${SRCS:S/logoutx.c//}
+SRCS:= ${SRCS:S/logwtmp.c//}
+SRCS:= ${SRCS:S/logwtmpx.c//}
+SRCS:= ${SRCS:S/opendisk.c//}
+SRCS:= ${SRCS:S/parsedate.y//}
+SRCS:= ${SRCS:S/passwd.c//}
+SRCS:= ${SRCS:S/pw_scan.c//}
+SRCS:= ${SRCS:S/pidfile.c//}
+SRCS:= ${SRCS:S/pty.c//}
+SRCS:= ${SRCS:S/strpct.c//}
+SRCS:= ${SRCS:S/ttyaction.c//}
+SRCS:= ${SRCS:S/ttymsg.c//}
+# compat/Makefile.inc
+# .info ${SRCS}
+SRCS:= ${SRCS:S/compat_//}
+SRCS:= ${SRCS:S/compat_//}
+.info ${SRCS}
+# ?
+SRCS:= ${SRCS:S/parsedate.c//}
+.endif
 
 MLINKS+=getlabelsector.3 getlabeloffset.3
 MLINKS+=getlabelsector.3 getlabelusesmbr.3

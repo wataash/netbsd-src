@@ -128,6 +128,7 @@ erealloc(void *p, size_t n)
 	return q;
 }
 
+#ifndef __APPLE__
 void
 ereallocarr(void *p, size_t n, size_t s)
 {
@@ -137,6 +138,7 @@ ereallocarr(void *p, size_t n, size_t s)
 		(*efunc)(1, "Cannot re-allocate %zu * %zu bytes", n, s);
 	}
 }
+#endif /* __APPLE__ */
 
 FILE *
 efopen(const char *p, const char *m)
@@ -168,6 +170,7 @@ evasprintf(char ** __restrict ret, const char * __restrict format, va_list ap)
 	return rv;
 }
 
+#ifndef __APPLE__
 intmax_t
 estrtoi(const char * nptr, int base, intmax_t lo, intmax_t hi)
 {
@@ -181,7 +184,9 @@ estrtoi(const char * nptr, int base, intmax_t lo, intmax_t hi)
 	}
 	return rv;
 }
+#endif /* __APPLE__ */
 
+#ifndef __APPLE__
 uintmax_t
 estrtou(const char * nptr, int base, uintmax_t lo, uintmax_t hi)
 {
@@ -195,3 +200,4 @@ estrtou(const char * nptr, int base, uintmax_t lo, uintmax_t hi)
 	}
 	return rv;
 }
+#endif /* __APPLE__ */
