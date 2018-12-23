@@ -195,6 +195,8 @@ static int
 set80211(prop_dictionary_t env, uint16_t type, int16_t val, int16_t len,
     u_int8_t *data)
 {
+#ifdef EXEC_ON_APPLE
+#else
 	struct ieee80211req	ireq;
 
 	memset(&ireq, 0, sizeof(ireq));
@@ -206,6 +208,7 @@ set80211(prop_dictionary_t env, uint16_t type, int16_t val, int16_t len,
 		warn("SIOCS80211");
 		return -1;
 	}
+#endif /* EXEC_ON_APPLE */
 	return 0;
 }
 
@@ -250,6 +253,8 @@ get80211opmode(prop_dictionary_t env)
 static int
 setifssid(prop_dictionary_t env, prop_dictionary_t oenv)
 {
+#ifdef EXEC_ON_APPLE
+#else
 	struct ieee80211_nwid nwid;
 	ssize_t len;
 
@@ -260,24 +265,30 @@ setifssid(prop_dictionary_t env, prop_dictionary_t oenv)
 	nwid.i_len = (uint8_t)len;
 	if (indirect_ioctl(env, SIOCS80211NWID, &nwid) == -1)
 		err(EXIT_FAILURE, "SIOCS80211NWID");
+#endif /* EXEC_ON_APPLE */
 	return 0;
 }
 
 static int
 unsetifbssid(prop_dictionary_t env, prop_dictionary_t oenv)
 {
+#ifdef EXEC_ON_APPLE
+#else
 	struct ieee80211_bssid bssid;
 
 	memset(&bssid, 0, sizeof(bssid));
 
 	if (direct_ioctl(env, SIOCS80211BSSID, &bssid) == -1)
 		err(EXIT_FAILURE, "SIOCS80211BSSID");
+#endif /* EXEC_ON_APPLE */
 	return 0;
 }
 
 static int
 setifbssid(prop_dictionary_t env, prop_dictionary_t oenv)
 {
+#ifdef EXEC_ON_APPLE
+#else
 	char buf[24];
 	struct ieee80211_bssid bssid;
 	struct ether_addr *ea;
@@ -295,6 +306,7 @@ setifbssid(prop_dictionary_t env, prop_dictionary_t oenv)
 
 	if (direct_ioctl(env, SIOCS80211BSSID, &bssid) == -1)
 		err(EXIT_FAILURE, "SIOCS80211BSSID");
+#endif /* EXEC_ON_APPLE */
 	return 0;
 }
 
@@ -327,6 +339,8 @@ setiffrag(prop_dictionary_t env, prop_dictionary_t oenv)
 static int
 setifchan(prop_dictionary_t env, prop_dictionary_t oenv)
 {
+#ifdef EXEC_ON_APPLE
+#else
 	bool rc;
 	struct ieee80211chanreq channel;
 
@@ -334,12 +348,15 @@ setifchan(prop_dictionary_t env, prop_dictionary_t oenv)
 	assert(rc);
 	if (direct_ioctl(env, SIOCS80211CHANNEL, &channel) == -1)
 		err(EXIT_FAILURE, "SIOCS80211CHANNEL");
+#endif /* EXEC_ON_APPLE */
 	return 0;
 }
 
 static int
 setifnwkey(prop_dictionary_t env, prop_dictionary_t oenv)
 {
+#ifdef EXEC_ON_APPLE
+#else
 	const char *val;
 	char buf[256];
 	struct ieee80211_nwkey nwkey;
@@ -400,12 +417,15 @@ setifnwkey(prop_dictionary_t env, prop_dictionary_t oenv)
 
 	if (direct_ioctl(env, SIOCS80211NWKEY, &nwkey) == -1)
 		err(EXIT_FAILURE, "SIOCS80211NWKEY");
+#endif /* EXEC_ON_APPLE */
 	return 0;
 }
 
 static int
 unsetifnwkey(prop_dictionary_t env, prop_dictionary_t oenv)
 {
+#ifdef EXEC_ON_APPLE
+#else
 	struct ieee80211_nwkey nwkey;
 	int i;
 
@@ -418,12 +438,15 @@ unsetifnwkey(prop_dictionary_t env, prop_dictionary_t oenv)
 
 	if (direct_ioctl(env, SIOCS80211NWKEY, &nwkey) == -1)
 		err(EXIT_FAILURE, "SIOCS80211NWKEY");
+#endif /* EXEC_ON_APPLE */
 	return 0;
 }
 
 static int
 setifpowersave(prop_dictionary_t env, prop_dictionary_t oenv)
 {
+#ifdef EXEC_ON_APPLE
+#else
 	struct ieee80211_power power;
 	bool on, rc;
 
@@ -438,12 +461,15 @@ setifpowersave(prop_dictionary_t env, prop_dictionary_t oenv)
 		warn("SIOCS80211POWER");
 		return -1;
 	}
+#endif /* EXEC_ON_APPLE */
 	return 0;
 }
 
 static int
 setifpowersavesleep(prop_dictionary_t env, prop_dictionary_t oenv)
 {
+#ifdef EXEC_ON_APPLE
+#else
 	struct ieee80211_power power;
 	int64_t maxsleep;
 	bool rc;
@@ -457,6 +483,7 @@ setifpowersavesleep(prop_dictionary_t env, prop_dictionary_t oenv)
 	power.i_maxsleep = maxsleep;
 	if (direct_ioctl(env, SIOCS80211POWER, &power) == -1)
 		err(EXIT_FAILURE, "SIOCS80211POWER");
+#endif /* EXEC_ON_APPLE */
 	return 0;
 }
 
@@ -482,6 +509,8 @@ scan_exec(prop_dictionary_t env, prop_dictionary_t oenv)
 static void
 ieee80211_statistics(prop_dictionary_t env)
 {
+#ifdef EXEC_ON_APPLE
+#else
 #ifndef SMALL
 	struct ieee80211_stats stats;
 	struct ifreq ifr;
@@ -586,11 +615,14 @@ ieee80211_statistics(prop_dictionary_t env)
 	STAT_PRINT(is_ff_encap, "fast frames encap'd for tx");
 	STAT_PRINT(is_rx_badbintval, "rx frame w/ bogus bintval");
 #endif
+#endif /* EXEC_ON_APPLE */
 }
 
 static void
 ieee80211_status(prop_dictionary_t env, prop_dictionary_t oenv)
 {
+#ifdef EXEC_ON_APPLE
+#else
 	int i, nwkey_verbose;
 	struct ieee80211_nwid nwid;
 	struct ieee80211_nwkey nwkey;
@@ -732,6 +764,7 @@ ieee80211_status(prop_dictionary_t env, prop_dictionary_t oenv)
 			printf(" chan %d", channel.i_channel);
 		printf("\n");
 	}
+#endif /* EXEC_ON_APPLE */
 }
 
 static void
@@ -789,6 +822,8 @@ calc_len(const u_int8_t *cp, int len)
 static void
 list_scan(prop_dictionary_t env)
 {
+#ifdef EXEC_ON_APPLE
+#else
 	u_int8_t buf[64*1024 - 1];
 	struct ieee80211req ireq;
 	char ssid[IEEE80211_NWID_LEN+1];
@@ -837,6 +872,7 @@ list_scan(prop_dictionary_t env)
 		printf("\n");
 		cp += sr->isr_len, len -= sr->isr_len;
 	}
+#endif /* EXEC_ON_APPLE */
 }
 /*
  * Convert MHz frequency to IEEE channel number.

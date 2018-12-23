@@ -59,8 +59,11 @@ static const struct kwinst linkkw[] = {
 	   .k_bool = true, .k_nextparser = &command_root.pb_parser}
 };
 
+#ifdef EXEC_ON_APPLE
+#else /* EXEC_ON_APPLE */
 struct pkw link_pkw = PKW_INITIALIZER(&link_pkw, "link", NULL, NULL,
     linkkw, __arraycount(linkkw), NULL);
+#endif /* EXEC_ON_APPLE */
 
 static struct afswtch af = {
 	.af_name = "link", .af_af = AF_LINK, .af_status = link_status,
@@ -115,8 +118,11 @@ link_commit_address(prop_dictionary_t env, prop_dictionary_t oenv)
 		  }
 		, .dgaddr = BUFPARAM(dgreq.addr)
 		, .addr = BUFPARAM(req.addr)
+#ifdef EXEC_ON_APPLE
+#else /* EXEC_ON_APPLE */
 		, .aifaddr = IFADDR_PARAM(SIOCALIFADDR)
 		, .difaddr = IFADDR_PARAM(SIOCDLIFADDR)
+#endif /* EXEC_ON_APPLE */
 		, .gifaddr = IFADDR_PARAM(0)
 		, .pre_aifaddr = link_pre_aifaddr
 	};

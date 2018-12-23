@@ -82,8 +82,11 @@ static const struct kwinst atalkkw[] = {
 	, {.k_word = "range", .k_nextparser = &parse_range.ps_parser}
 };
 
+#ifdef EXEC_ON_APPLE
+#else /* EXEC_ON_APPLE */
 struct pkw atalk = PKW_INITIALIZER(&atalk, "AppleTalk", NULL, NULL,
     atalkkw, __arraycount(atalkkw), NULL);
+#endif /* EXEC_ON_APPLE */
 
 static cmdloop_branch_t branch;
 
