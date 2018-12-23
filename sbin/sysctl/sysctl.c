@@ -90,6 +90,12 @@ __RCSID("$NetBSD: sysctl.c,v 1.161 2018/10/30 19:41:21 kre Exp $");
 #include <nfs/rpcv2.h>
 #include <nfs/nfsproto.h>
 #include <nfs/nfs.h>
+#ifdef EXEC_ON_APPLE
+#include "../../../dest.i386/usr/include/stdint.h"
+#define _STDINT_H_
+#else
+#include <stdint.h>
+#endif /* EXEC_ON_APPLE */
 #include <machine/cpu.h>
 
 #include <assert.h>
@@ -347,8 +353,10 @@ main(int argc, char *argv[])
 	if ((Aflag || Mflag || dflag) && argc == 0 && fn == NULL)
 		aflag = 1;
 
+#ifndef EXEC_ON_APPLE
 	if (prog_init && prog_init() == -1)
 		err(EXIT_FAILURE, "prog init failed");
+#endif /* EXEC_ON_APPLE */
 
 	if (Aflag)
 		warnfp = stdout;
@@ -857,7 +865,7 @@ parse(char *l, regex_t *re, size_t *lastcompiled)
 		*value++ = '\0';
 	}
 
-	if ((dot = strpbrk(key, "./")) == NULL)
+	if ((dot = strpbrk(key, "./")) == NULL)  // what slash?
 		sep[0] = '.';
 	else
 		sep[0] = dot[0];
