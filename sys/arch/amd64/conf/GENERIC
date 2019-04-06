@@ -109,20 +109,26 @@ options 	BUFQ_PRIOCSCAN
 options 	DIAGNOSTIC	# inexpensive kernel consistency checks
 				# XXX to be commented out on release branch
 #options 	DEBUG		# expensive debugging checks/support
+options 	DEBUG		# expensive debugging checks/support
 #options 	LOCKDEBUG	# expensive locking checks/support
+options 	LOCKDEBUG	# expensive locking checks/support
 
 #
 # Because gcc omits the frame pointer for any -O level, the line below
 # is needed to make backtraces in DDB work.
 #
 makeoptions	COPTS="-O2 -fno-omit-frame-pointer"
+# makeoptions	COPTS="-O0 -fno-omit-frame-pointer"
 options 	DDB		# in-kernel debugger
 #options 	DDB_COMMANDONENTER="bt"	# execute command when ddb is entered
+options 	DDB_COMMANDONENTER="bt"	# execute command when ddb is entered
 #options 	DDB_ONPANIC=1	# see also sysctl(7): `ddb.onpanic'
+options 	DDB_ONPANIC=1	# see also sysctl(7): `ddb.onpanic'
 options 	DDB_HISTORY_SIZE=512	# enable history editing in DDB
 #options 	KGDB		# remote debugger
 #options 	KGDB_DEVNAME="\"com\"",KGDB_DEVADDR=0x3f8,KGDB_DEVRATE=9600
 makeoptions	DEBUG="-g"	# compile full symbol table for CTF
+makeoptions	DEBUG="-ggdb3"
 options DDB_COMMANDONENTER="trace;show registers"
 #options 	SYSCALL_STATS	# per syscall counts
 #options 	SYSCALL_TIMES	# per syscall times
@@ -217,6 +223,7 @@ options 	INET		# IP + ICMP + TCP + UDP
 options 	INET6		# IPV6
 options 	IPSEC		# IP security
 #options 	IPSEC_DEBUG	# debug for IP security
+options 	IPSEC_DEBUG	# debug for IP security
 #options 	MPLS		# MultiProtocol Label Switching (needs mpls)
 #options 	MROUTING	# IP multicast routing
 #options 	PIM		# Protocol Independent Multicast
@@ -1109,6 +1116,7 @@ vioif*	at virtio?			# Virtio network device
 viornd* at virtio?			# Virtio entropy device
 vioscsi* at virtio?			# Virtio SCSI device
 #vio9p*	at virtio?			# Virtio 9P device
+vio9p*	at virtio?			# Virtio 9P device
 
 # Hyper-V devices
 vmbus*		at acpi?		# Hyper-V VMBus
