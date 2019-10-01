@@ -1,0 +1,7 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="cbt0" type="CLionExternalRunConfiguration" factoryName="Application" nameIsGenerated="true" PROGRAM_PARAMS="/tmp/test.sh" PASS_PARENT_ENVS_2="true" PROJECT_NAME="sh" TARGET_NAME="cbt0" CONFIG_NAME="cbt0" RUN_PATH="$PROJECT_DIR$/../../../obj.amd64/bin/sh/sh">
+    <method v="2">
+      <option name="CLION.EXTERNAL.BUILD" enabled="true" />
+    </method>
+  </configuration>
+</component>

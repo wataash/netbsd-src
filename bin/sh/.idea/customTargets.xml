@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CLionExternalBuildManager">
+    <target id="6f95b6d4-6ba4-4419-b988-fb484857fecb" name="cbt0" projectName="sh">
+      <configuration id="7935b93d-5744-42c5-870e-a179ff55b085" name="cbt0" toolchainName="sshgdb_nb">
+        <build type="TOOL">
+          <tool actionId="Tool_External Tools_et_echo" />
+        </build>
+      </configuration>
+    </target>
+  </component>
+</project>
