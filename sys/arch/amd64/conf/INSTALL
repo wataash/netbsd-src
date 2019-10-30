@@ -19,6 +19,39 @@ options 	MEMORY_DISK_ROOT_SIZE=10000	# size of memory disk, in blocks
 options 	MEMORY_DISK_RBFLAGS=RB_SINGLE	# boot in single-user mode
 
 # DRMKMS driver
-no i915drmkms*     at pci?
-no radeon*         at pci?
-no nouveau*	   at pci?
+### no i915drmkms*     at pci?
+### no radeon*         at pci?
+### no nouveau*	   at pci?
+
+### with above:
+### 
+###     #      link  GENERIC_KASLR/netbsd
+###     /home/wsh/qc/netbsd/src/../tools/bin/x86_64--netbsd-ld -Map netbsd.map --cref -T netbsd.ldscript -Ttext 0xffffffff80200000 -e start --split-by-file=0x100000 -r -d -X -o netbsd ${SYSTEM_OBJ:[@]:Nswapnetbsd.o} ${EXTRA_OBJ} vers.o swapnetbsd.o
+###     NetBSD 9.99.17 (GENERIC_KASLR) #0: Thu Oct 31 02:48:02 JST 2019
+###        text	   data	    bss	    dec	    hex	filename
+###     8144192	 173416	 600856	8918464	 8815c0	netbsd
+###     mv -f netbsd netbsd.gdb
+###     /home/wsh/qc/netbsd/src/../tools/bin/x86_64--netbsd-strip -g -o netbsd netbsd.gdb
+###     sync
+###     cd /home/wsh/qc/netbsd/src/sys/arch/amd64/conf && /home/wsh/qc/netbsd/src/../tools/bin/nbconfig  -s /home/wsh/qc/netbsd/src/sys  -b /home/wsh/qc/netbsd/src/../obj.amd64/sys/arch/amd64/compile/INSTALL INSTALL
+###     /home/wsh/qc/netbsd/src/sys/arch/amd64/conf/GENERIC:110: warning: already have makeoptions `COPTS=-O2 -fno-omit-frame-pointer'
+###     /home/wsh/qc/netbsd/src/sys/arch/amd64/conf/GENERIC:120: warning: already have makeoptions `DEBUG=-g'
+###     INSTALL:22: `i915drmkms*' not defined
+###     INSTALL:23: `radeon*' not defined
+###     INSTALL:24: `nouveau*' not defined
+###     *** Stop.
+###     *** [kern-INSTALL] Error code 1
+###     
+###     nbmake[1]: stopped in /home/wsh/qc/netbsd/src/etc
+###     1 error
+###     
+###     nbmake[1]: stopped in /home/wsh/qc/netbsd/src/etc
+###     *** [release] Error code 2
+###     
+###     nbmake: stopped in /home/wsh/qc/netbsd/src
+###     1 error
+###     
+###     nbmake: stopped in /home/wsh/qc/netbsd/src
+###     
+###     ERROR: Failed to make release
+###     *** BUILD ABORTED ***
