@@ -1,0 +1,5 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="remote 10834" type="CLion_Remote" debugger="$USER_HOME$/opt/gdb9.1/bin/gdb9.1" remoteCommand="tcp::10834" symbolFile="$PROJECT_DIR$/../../zco.amd64/sbin/route/route" sysroot="">
+    <method v="2" />
+  </configuration>
+</component>

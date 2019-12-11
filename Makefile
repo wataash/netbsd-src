@@ -103,6 +103,17 @@
 #   do-obsolete:     installs the obsolete sets (for the postinstall-* targets).
 #
 
+.info *** loading Makefile ***
+
+.if0
+# ../tooldir.i386/bin/nbmake-i386
+.info ${.MAKEFLAGS}                       # =>  -d e -m /home/wsh/src/netbsd/src/share/mk
+.info ${.MAKEFLAGS:M*}                    # => -d e -m /home/wsh/src/netbsd/src/share/mk
+.info ${.MAKEFLAGS:M${.CURDIR}/share/mk}  # => /home/wsh/src/netbsd/src/share/mk
+.info ${.MAKEFLAGS:M-d}                   # => -d
+.info ${.MAKEFLAGS:Md}                    # =>
+.endif
+
 .if ${.MAKEFLAGS:M${.CURDIR}/share/mk} == ""
 .MAKEFLAGS: -m ${.CURDIR}/share/mk
 .endif
@@ -122,9 +133,18 @@ _SRC_TOP_OBJ_=
 # with a standard recursive target.
 #
 
+.if0
+# ../tooldir.i386/bin/nbmake-i386
+.info ${TARGETS}  # => all clean cleandir depend dependall includes  install \
+                       lint obj regress tags html analyze describe  \
+                       rumpdescribe lintmanpages
+.info ${TARGETS:Nobj:Ncleandir}  # excludes obj, cleandir
+.endif
+
 .if make(build) || make(release) || make(snapshot)
 .for targ in ${TARGETS:Nobj:Ncleandir}
 .if make(${targ}) && !target(.BEGIN)
+.info define .BEGIN
 .BEGIN:
 	@echo 'BUILD ABORTED: "make build" and "make ${targ}" are mutually exclusive.'
 	@false

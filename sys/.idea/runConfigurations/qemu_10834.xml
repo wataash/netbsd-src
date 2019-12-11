@@ -1,0 +1,5 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="qemu 10834" type="CLion_Remote" debugger="$USER_HOME$/opt/gdb/bin/gdb99" remoteCommand=":10834" symbolFile="$PROJECT_DIR$/../zco.amd64/sys/arch/amd64/compile/GENERIC/netbsd.gdb" sysroot="">
+    <method v="2" />
+  </configuration>
+</component>
