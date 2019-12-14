@@ -114,6 +114,11 @@ CFLAGS+=	${${ACTIVE_CC} == "gcc":? -fstack-usage -Wstack-usage=3584 :}
 .endif
 CWARNFLAGS+=	-Walloca
 
+.if ${MACHINE_ARCH} == "x86_64"
+# AFLAGS+=	-O0 -ggdb3
+AFLAGS+=	-ggdb3
+.endif
+
 # XXX
 .if defined(HAVE_GCC) || defined(HAVE_LLVM)
 CFLAGS+=	-fno-strict-aliasing
@@ -144,6 +149,8 @@ COMPILE_CTFCONVERT=	${_MKSHNOECHO}
 .endif
 
 KCOMPILE.c=	${CC} ${COPTS.${<:T}} ${CFLAGS} ${CPPFLAGS} -c $< -o $@
+# hoge138 /home/wsh/qc/netbsd/src/sys/arch/amd64/amd64/locore.S hoge138 /home/wsh/qc/netbsd/src/sys/arch/amd64/amd64/locore.S hoge138 locore.S hoge138
+# KCOMPILE.s=	hoge138 ${<} hoge138 $< hoge138 ${<:T} hoge138
 KCOMPILE.s=	${CC} ${AFLAGS} ${AFLAGS.${<:T}} ${CPPFLAGS} -c $< -o $@
 KLINK.o=	${LD} -r ${LINKFORMAT} -Map=${.TARGET}.map -o ${.TARGET} ${.ALLSRC}
 
@@ -444,6 +451,8 @@ install-kernel-${MACHINE_NAME}:
 ## the kernel
 ##
 
+# hoge430 /home/wsh/qc/netbsd/src/sys/arch/amd64/amd64/locore.S hoge430 locore.S hoge430
+# AFLAGS+=	hoge430 ${.IMPSRC} hoge430 ${.IMPSRC:T} hoge430
 AFLAGS+=	${AOPTS.${.IMPSRC:T}}
 CFLAGS+=	${COPTS.${.IMPSRC:T}} ${CPUFLAGS.${.IMPSRC:T}}
 CPPFLAGS+=	${CPPFLAGS.${.IMPSRC:T}}
