@@ -35,6 +35,8 @@ maxusers	64		# estimated number of users
 #	you don't want the option below ON iff you are using the
 #	serial console option of the new boot strap code.
 #options 	CONS_OVERRIDE	# Always use above! independent of boot info
+options 	CONSDEVNAME="\"com\"",CONADDR=0x3f8,CONSPEED=115200
+options 	CONS_OVERRIDE	# Always use above! independent of boot info
 
 # The following options override the memory sizes passed in from the boot
 # block.  Use them *only* if the boot block is unable to determine the correct

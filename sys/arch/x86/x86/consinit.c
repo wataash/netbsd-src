@@ -183,6 +183,9 @@ consinit(void)
 
 #ifndef CONS_OVERRIDE
 	consinfo = lookup_bootinfo(BTINFO_CONSOLE);
+	// consinfo->devname[0] = 'c';
+	// consinfo->devname[1] = 'o';
+	// consinfo->devname[2] = 'm';
 	if (!consinfo)
 #endif
 		consinfo = &default_consinfo;
@@ -191,7 +194,7 @@ consinit(void)
 	fbinfo = lookup_bootinfo(BTINFO_FRAMEBUFFER);
 #endif
 
-	if (!strcmp(consinfo->devname, "pc")) {
+	if (strcmp(consinfo->devname, "pc") == 0) {
 		int error;
 #if (NGENFB > 0)
 		if (fbinfo && fbinfo->physaddr > 0) {
@@ -238,7 +241,7 @@ dokbd:
 		return;
 	}
 #if (NCOM > 0)
-	if (!strcmp(consinfo->devname, "com")) {
+	if (strcmp(consinfo->devname, "com") == 0) {
 		int addr = consinfo->addr;
 		int speed = consinfo->speed;
 
@@ -250,6 +253,7 @@ dokbd:
 #endif
 
 		if (addr == 0)
+			// 0x3f8: 1016
 			addr = CONADDR;
 		if (speed == 0)
 			speed = CONSPEED;

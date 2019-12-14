@@ -2466,6 +2466,7 @@ cominit(struct com_regs *regsp, int rate, int frequency, int type,
 		CSR_WRITE_1(regsp, COM_REG_MDR1, MDR1_MODE_DISABLE);
 	}
 
+	// rate 115200 -> 1
 	rate = comspeed(rate, frequency, type);
 	if (rate != -1) {
 		if (type == COM_TYPE_AU1x00) {
@@ -2477,6 +2478,9 @@ cominit(struct com_regs *regsp, int rate, int frequency, int type,
 				CSR_WRITE_1(regsp, COM_REG_LCR, LCR_EERS);
 				CSR_WRITE_1(regsp, COM_REG_EFR, 0);
 			}
+			// write rate
+			// rate:1 rate&0xff:1 rate>>8:0
+			// probably QEMU ignores rate, always use maximum speed
 			CSR_WRITE_1(regsp, COM_REG_LCR, LCR_DLAB);
 			CSR_WRITE_1(regsp, COM_REG_DLBL, rate & 0xff);
 			CSR_WRITE_1(regsp, COM_REG_DLBH, rate >> 8);

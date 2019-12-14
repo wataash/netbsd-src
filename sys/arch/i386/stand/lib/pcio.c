@@ -40,6 +40,7 @@
 
 extern struct x86_boot_params boot_params;
 
+// TODO: debug
 struct btinfo_console btinfo_console;
 
 #ifdef SUPPORT_SERIAL
