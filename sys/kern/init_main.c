@@ -684,6 +684,7 @@ main(void)
 		if ((error = vfs_mountroot())) {
 			printf("cannot mount root, error = %d\n", error);
 			boothowto |= RB_ASKNAME;
+			// root_device: wm0
 			setroot(root_device,
 			    (rootdev != NODEV) ? DISKPART(rootdev) : 0);
 		}
@@ -1014,7 +1015,18 @@ start_init(void *arg)
 			if (initpaths[ipx])
 				printf(" (default %s)", initpaths[ipx]);
 			printf(": ");
+#if 0
 			len = cngetsn(ipath, sizeof(ipath)-1);
+#else
+			static int auto_input_once = 1;
+			if (auto_input_once) {
+				printf("\x1b[31m\"\" (for PXE boot)\x1b[0m\n");
+				len = strlcpy(ipath, "", sizeof(ipath)-1);
+			} else {
+				len = cngetsn(ipath, sizeof(ipath)-1);
+			}
+			auto_input_once = 0;
+#endif
 			if (len == 4 && strcmp(ipath, "halt") == 0) {
 				kern_reboot(RB_HALT, NULL);
 			} else if (len == 6 && strcmp(ipath, "reboot") == 0) {

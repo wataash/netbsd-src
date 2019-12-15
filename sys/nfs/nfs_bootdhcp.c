@@ -633,8 +633,10 @@ bootpc_call(struct nfs_diskless *nd, struct lwp *lwp, int *flags)
 	bpc.dhcp_ok = 0;
 #endif
 
+	printf("nfs_boot: nfs_boot_sendrecv()\n");
 	error = nfs_boot_sendrecv(so, &sin, bootpset, m,
 				  bootpcheck, NULL, NULL, &bpc, lwp);
+	printf("nfs_boot: nfs_boot_sendrecv() returned\n");
 	if (error)
 		goto out;
 

@@ -349,7 +349,12 @@ nfs_mountroot(void)
 	 * Side effect:  Finds and configures a network interface.
 	 */
 	nd = kmem_zalloc(sizeof(*nd), KM_SLEEP);
+	printf("nfs_mountroot: \x1b[31mskip nfs_boot_init(nd, l); it's too long to timeout\x1b[0m\n");
+#if 0
 	error = nfs_boot_init(nd, l);
+#else
+	error = ENETUNREACH;
+#endif
 	if (error) {
 		kmem_free(nd, sizeof(*nd));
 		return (error);

@@ -312,6 +312,7 @@ setroot_ask(device_t bootdv, int bootpartition)
 	const char *deffsname;
 	int len;
 	char buf[128];
+	static int auto_input_once = 1;
 
 	for (;;) {
 		printf("root device");
@@ -322,7 +323,16 @@ setroot_ask(device_t bootdv, int bootpartition)
 			printf(")");
 		}
 		printf(": ");
+#if 0
 		len = cngetsn(buf, sizeof(buf));
+#else
+		if (auto_input_once) {
+			printf("\x1b[31m\"wd0\" (for PXE boot)\x1b[0m\n");
+			len = strlcpy(buf, "wd0" ,sizeof(buf));
+		} else {
+			len = cngetsn(buf, sizeof(buf));
+		}
+#endif
 		if (len == 0 && bootdv != NULL) {
 			strlcpy(buf, device_xname(bootdv), sizeof(buf));
 			len = strlen(buf);
@@ -363,7 +373,16 @@ setroot_ask(device_t bootdv, int bootpartition)
 			printf(" (default %sb)", device_xname(defdumpdv));
 		}
 		printf(": ");
+#if 0
 		len = cngetsn(buf, sizeof(buf));
+#else
+		if (auto_input_once) {
+			printf("\x1b[31m\"\" (for PXE boot)\x1b[0m\n");
+			len = strlcpy(buf, "" ,sizeof(buf));
+		} else {
+			len = cngetsn(buf, sizeof(buf));
+		}
+#endif
 		if (len == 0) {
 			if (defdumpdv != NULL) {
 				ndumpdev = MAKEDISKDEV(major(nrootdev),
@@ -398,7 +417,17 @@ setroot_ask(device_t bootdv, int bootpartition)
 
 	for (;;) {
 		printf("file system (default %s): ", deffsname);
+#if 0
 		len = cngetsn(buf, sizeof(buf));
+#else
+		if (auto_input_once) {
+			printf("\x1b[31m\"\" (for PXE boot)\x1b[0m\n");
+			len = strlcpy(buf, "" ,sizeof(buf));
+		} else {
+			len = cngetsn(buf, sizeof(buf));
+		}
+		auto_input_once = 0;
+#endif
 		if (len == 0) {
 			if (strcmp(deffsname, "generic") == 0)
 				rootfstype = ROOT_FSTYPE_ANY;

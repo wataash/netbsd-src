@@ -154,7 +154,12 @@ nfs_boot_init(struct nfs_diskless *nd, struct lwp *lwp)
 #ifdef NFS_BOOT_BOOTPARAM
 	if (error && nfs_boot_bootparam) {
 		printf("nfs_boot: trying RARP (and RPC/bootparam)\n");
+		printf("\x1b[31mnfs_boot: ...skip it; it's too long to timeout\x1b[0\n");
+#if 0
 		error = nfs_bootparam(nd, lwp, &flags);
+#else // 0
+		error = ENETUNREACH;
+#endif // 0
 	}
 #endif
 	if (error)
@@ -427,6 +432,10 @@ nfs_boot_sobind_ipport(struct socket *so, uint16_t port, struct lwp *l)
  */
 #define	MAX_RESEND_DELAY 5	/* seconds */
 #define TOTAL_TIMEOUT   30	/* seconds */
+#undef	MAX_RESEND_DELAY
+#undef	TOTAL_TIMEOUT
+#define	MAX_RESEND_DELAY 2	/* seconds */
+#define	TOTAL_TIMEOUT    3	/* seconds */
 
 int
 nfs_boot_sendrecv(struct socket *so, struct sockaddr_in *nam,
@@ -451,16 +460,24 @@ nfs_boot_sendrecv(struct socket *so, struct sockaddr_in *nam,
 	waited = timo = 0;
 send_again:
 	waited += timo;
+	printf("\x1b[37mnfs_boot: waited:%d timo:%d\x1b[0m\n", waited, timo);
 	if (waited >= TOTAL_TIMEOUT)
+	{
+		printf("nfs_boot: waited:%d >= TOTAL_TIMEOUT:%d; return ETIMEDOUT\n", waited, TOTAL_TIMEOUT);
 		return (ETIMEDOUT);
+	}
 
 	/* Determine new timeout. */
 	if (timo < MAX_RESEND_DELAY)
+	{
+		printf("\x1b[37mnfs_boot: timo++\x1b[0m\n");
 		timo++;
+	}
 	else
 		printf("nfs_boot: timeout...\n");
 
 	if (sndproc) {
+		printf("\x1b[37mnfs_boot: (*sndproc)(snd, context, waited)\x1b[0m\n");
 		error = (*sndproc)(snd, context, waited);
 		if (error)
 			goto out;
@@ -472,10 +489,11 @@ send_again:
 		error = ENOBUFS;
 		goto out;
 	}
+	printf("\x1b[37mnfs_boot: (*so->so_send)\x1b[0m\n");
 	error = (*so->so_send)(so, (struct sockaddr *)nam, NULL,
 	    m, NULL, 0, lwp);
 	if (error) {
-		printf("nfs_boot: sosend: %d\n", error);
+		printf("\x1b[37mnfs_boot: sosend: %d\x1b[0m\n", error);
 		goto out;
 	}
 	m = NULL;
@@ -497,6 +515,7 @@ send_again:
 		}
 		uio.uio_resid = 1 << 16; /* ??? */
 		rcvflg = 0;
+		printf("\x1b[37mnfs_boot: (*so->so_receive)\x1b[0m\n");
 		error = (*so->so_receive)(so, &from, &uio, &m, NULL, &rcvflg);
 		if (error == EWOULDBLOCK) {
 			if (--secs <= 0)
