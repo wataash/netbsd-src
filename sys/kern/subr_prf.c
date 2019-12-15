@@ -457,7 +457,7 @@ addtstamp(int flags, struct tty *tp)
 	if (n < 9)
 		fsec = (fsec / 10) + ((fsec % 10) >= 5);
 
-	n = snprintf(buf, sizeof(buf), "[% 4jd.%.*ld] ",
+	n = snprintf(buf, sizeof(buf), "\x1b[37m[% 4jd.%.*ld]\x1b[0m ",
 	    (intmax_t)ts.tv_sec, prec, fsec);
 
 	for (int i = 0; i < n; i++)
@@ -487,7 +487,14 @@ putchar(int c, int flags, struct tty *tp)
 	}
 
 	if (c == '\n')
+	{
 		needtstamp = 1;
+
+		static const char *const color = "\x1b[0m";
+		for (const char *cp2 = color; *cp2 != '\0'; cp2++) {
+			putone(*cp2, flags, tp);
+		}
+	}
 #endif
 	putone(c, flags, tp);
 
@@ -1228,6 +1235,33 @@ device_printf(device_t dev, const char *fmt, ...)
 	return;
 }
 
+
+#define loop() do { \
+	_loop(); \
+} while (0)
+
+void _loop(void);
+
+void
+_loop(void)
+{
+	static volatile int not_loop = 0; // set me to 1 with gdb
+	if (not_loop)
+		return;
+
+	volatile long break_ = 1;
+	while (break_ != 0) {
+		// to quit: wait ~1s or `break_ = 0` with gdb
+		break_++;
+		// if (break_ == (long)1e9) { // tune me
+		if (break_ == (long)5e8) {
+			break;
+		}
+	}
+
+	return; // breakpoint
+}
+
 /*
  * Guts of kernel printf.  Note, we already expect to be in a mutex!
  */
@@ -1265,6 +1299,23 @@ kprintf(const char *fmt0, int oflags, void *vp, char *sbuf, va_list ap)
 	ret = 0;
 
 	xdigs = NULL;		/* XXX: shut up gcc warning */
+
+	// loop();
+
+	// TOBUFONLY: avoid re-entrance from
+	//   KPRINTF_PUTCHAR()
+	//   -> putchar()
+	//   -> addtstamp()
+	//   -> snprintf()
+	//   -> vsnprintf()
+	//   -> kprintf(oflags:TOBUFONLY)
+	// causing panic
+	if (oflags != TOBUFONLY) {
+		static const char *const color = "\x1b[32m";
+		for (const char *cp2 = color; *cp2 != '\0'; cp2++) {
+			KPRINTF_PUTCHAR(*cp2);
+		}
+	}
 
 	/*
 	 * Scan the format for conversions (`%' character).
