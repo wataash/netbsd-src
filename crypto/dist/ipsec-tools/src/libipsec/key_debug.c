@@ -68,8 +68,15 @@
 #include <stdlib.h>
 #endif /* !_KERNEL */
 
+#include <errno.h>
+#include <unistd.h>
+#include <util.h>
+
 #include "config.h"
 #include "libpfkey.h"
+
+// wataash
+#include <string.h>
 
 static void kdebug_sadb_prop(struct sadb_ext *);
 static void kdebug_sadb_identity(struct sadb_ext *);
@@ -109,6 +116,565 @@ static void kdebug_secreplay(struct secreplay *);
 #include "libpfkey.h"
 /* NOTE: host byte order */
 
+// -----------------------------------------------------------------------------
+// to str
+
+// sys/errno.h
+
+// GENERATED
+static const char *
+str_errno_int_t(errno_int_t val)
+{
+	static const struct val_str {
+		errno_int_t val;
+		const char *const str;
+	} pairs_val_str[] = {
+	    {EPERM, "EPERM"},
+	    {ENOENT, "ENOENT"},
+	    {ESRCH, "ESRCH"},
+	    {EINTR, "EINTR"},
+	    {EIO, "EIO"},
+	    {ENXIO, "ENXIO"},
+	    {E2BIG, "E2BIG"},
+	    {ENOEXEC, "ENOEXEC"},
+	    {EBADF, "EBADF"},
+	    {ECHILD, "ECHILD"},
+	    {EDEADLK, "EDEADLK"},
+	    {ENOMEM, "ENOMEM"},
+	    {EACCES, "EACCES"},
+	    {EFAULT, "EFAULT"},
+	    {ENOTBLK, "ENOTBLK"},
+	    {EBUSY, "EBUSY"},
+	    {EEXIST, "EEXIST"},
+	    {EXDEV, "EXDEV"},
+	    {ENODEV, "ENODEV"},
+	    {ENOTDIR, "ENOTDIR"},
+	    {EISDIR, "EISDIR"},
+	    {EINVAL, "EINVAL"},
+	    {ENFILE, "ENFILE"},
+	    {EMFILE, "EMFILE"},
+	    {ENOTTY, "ENOTTY"},
+	    {ETXTBSY, "ETXTBSY"},
+	    {EFBIG, "EFBIG"},
+	    {ENOSPC, "ENOSPC"},
+	    {ESPIPE, "ESPIPE"},
+	    {EROFS, "EROFS"},
+	    {EMLINK, "EMLINK"},
+	    {EPIPE, "EPIPE"},
+	    {EDOM, "EDOM"},
+	    {ERANGE, "ERANGE"},
+	    {EAGAIN, "EAGAIN"},
+	    {EINPROGRESS, "EINPROGRESS"},
+	    {EALREADY, "EALREADY"},
+	    {ENOTSOCK, "ENOTSOCK"},
+	    {EDESTADDRREQ, "EDESTADDRREQ"},
+	    {EMSGSIZE, "EMSGSIZE"},
+	    {EPROTOTYPE, "EPROTOTYPE"},
+	    {ENOPROTOOPT, "ENOPROTOOPT"},
+	    {EPROTONOSUPPORT, "EPROTONOSUPPORT"},
+	    {ESOCKTNOSUPPORT, "ESOCKTNOSUPPORT"},
+	    {EOPNOTSUPP, "EOPNOTSUPP"},
+	    {EPFNOSUPPORT, "EPFNOSUPPORT"},
+	    {EAFNOSUPPORT, "EAFNOSUPPORT"},
+	    {EADDRINUSE, "EADDRINUSE"},
+	    {EADDRNOTAVAIL, "EADDRNOTAVAIL"},
+	    {ENETDOWN, "ENETDOWN"},
+	    {ENETUNREACH, "ENETUNREACH"},
+	    {ENETRESET, "ENETRESET"},
+	    {ECONNABORTED, "ECONNABORTED"},
+	    {ECONNRESET, "ECONNRESET"},
+	    {ENOBUFS, "ENOBUFS"},
+	    {EISCONN, "EISCONN"},
+	    {ENOTCONN, "ENOTCONN"},
+	    {ESHUTDOWN, "ESHUTDOWN"},
+	    {ETOOMANYREFS, "ETOOMANYREFS"},
+	    {ETIMEDOUT, "ETIMEDOUT"},
+	    {ECONNREFUSED, "ECONNREFUSED"},
+	    {ELOOP, "ELOOP"},
+	    {ENAMETOOLONG, "ENAMETOOLONG"},
+	    {EHOSTDOWN, "EHOSTDOWN"},
+	    {EHOSTUNREACH, "EHOSTUNREACH"},
+	    {ENOTEMPTY, "ENOTEMPTY"},
+	    {EPROCLIM, "EPROCLIM"},
+	    {EUSERS, "EUSERS"},
+	    {EDQUOT, "EDQUOT"},
+	    {ESTALE, "ESTALE"},
+	    {EREMOTE, "EREMOTE"},
+	    {EBADRPC, "EBADRPC"},
+	    {ERPCMISMATCH, "ERPCMISMATCH"},
+	    {EPROGUNAVAIL, "EPROGUNAVAIL"},
+	    {EPROGMISMATCH, "EPROGMISMATCH"},
+	    {EPROCUNAVAIL, "EPROCUNAVAIL"},
+	    {ENOLCK, "ENOLCK"},
+	    {ENOSYS, "ENOSYS"},
+	    {EFTYPE, "EFTYPE"},
+	    {EAUTH, "EAUTH"},
+	    {ENEEDAUTH, "ENEEDAUTH"},
+	    {EIDRM, "EIDRM"},
+	    {ENOMSG, "ENOMSG"},
+	    {EOVERFLOW, "EOVERFLOW"},
+	    {EILSEQ, "EILSEQ"},
+	    {ENOTSUP, "ENOTSUP"},
+	    {ECANCELED, "ECANCELED"},
+	    {EBADMSG, "EBADMSG"},
+	    {ENODATA, "ENODATA"},
+	    {ENOSR, "ENOSR"},
+	    {ENOSTR, "ENOSTR"},
+	    {ETIME, "ETIME"},
+	    {ENOATTR, "ENOATTR"},
+	    {EMULTIHOP, "EMULTIHOP"},
+	    {ENOLINK, "ENOLINK"},
+	    {ELAST, "ELAST"},
+	    {0, NULL},
+	};
+
+	for (const struct val_str *ts = pairs_val_str; ts->str != NULL; ts++) {
+		if (ts->val == val)
+			return ts->str;
+	}
+
+	return "???";
+}
+
+// netipsdc/ipsec.h
+
+// GENERATED
+static const char *
+str_ipsec_proto_uint8_t(ipsec_proto_uint8_t val)
+{
+	static const struct val_str {
+		ipsec_proto_uint8_t val;
+		const char *const str;
+	} pairs_val_str[] = {
+	    {IPSEC_PORT_ANY, "IPSEC_PORT_ANY"},
+	    {IPSEC_PROTO_ANY, "IPSEC_PROTO_ANY"},
+	    {0, NULL},
+	};
+
+	for (const struct val_str *ts = pairs_val_str; ts->str != NULL; ts++) {
+		if (ts->val == val)
+			return ts->str;
+	}
+
+	return "???";
+}
+
+// GENERATED
+static const char *
+str_ipsec_mode_uint8_t(ipsec_mode_uint8_t val)
+{
+	static const struct val_str {
+		ipsec_mode_uint8_t val;
+		const char *const str;
+	} pairs_val_str[] = {
+	    {IPSEC_MODE_ANY, "IPSEC_MODE_ANY"},
+	    {IPSEC_MODE_TRANSPORT, "IPSEC_MODE_TRANSPORT"},
+	    {IPSEC_MODE_TUNNEL, "IPSEC_MODE_TUNNEL"},
+	    {IPSEC_MODE_TCPMD5, "IPSEC_MODE_TCPMD5"},
+	    {0, NULL},
+	};
+
+	for (const struct val_str *ts = pairs_val_str; ts->str != NULL; ts++) {
+		if (ts->val == val)
+			return ts->str;
+	}
+
+	return "???";
+}
+
+// GENERATED
+static const char *
+str_ipsec_dir_uint8_t(ipsec_dir_uint8_t val)
+{
+	static const struct val_str {
+		ipsec_dir_uint8_t val;
+		const char *const str;
+	} pairs_val_str[] = {
+	    {IPSEC_DIR_ANY, "IPSEC_DIR_ANY"},
+	    {IPSEC_DIR_INBOUND, "IPSEC_DIR_INBOUND"},
+	    {IPSEC_DIR_OUTBOUND, "IPSEC_DIR_OUTBOUND"},
+	    {IPSEC_DIR_MAX, "IPSEC_DIR_MAX"},
+	    {IPSEC_DIR_INVALID, "IPSEC_DIR_INVALID"},
+	    {0, NULL},
+	};
+
+	for (const struct val_str *ts = pairs_val_str; ts->str != NULL; ts++) {
+		if (ts->val == val)
+			return ts->str;
+	}
+
+	return "???";
+}
+
+// GENERATED
+static const char *
+str_ipsec_policy_uint16_t(ipsec_policy_uint16_t val)
+{
+	static const struct val_str {
+		ipsec_policy_uint16_t val;
+		const char *const str;
+	} pairs_val_str[] = {
+	    {IPSEC_POLICY_DISCARD, "IPSEC_POLICY_DISCARD"},
+	    {IPSEC_POLICY_NONE, "IPSEC_POLICY_NONE"},
+	    {IPSEC_POLICY_IPSEC, "IPSEC_POLICY_IPSEC"},
+	    {IPSEC_POLICY_ENTRUST, "IPSEC_POLICY_ENTRUST"},
+	    {IPSEC_POLICY_BYPASS, "IPSEC_POLICY_BYPASS"},
+	    {0, NULL},
+	};
+
+	for (const struct val_str *ts = pairs_val_str; ts->str != NULL; ts++) {
+		if (ts->val == val)
+			return ts->str;
+	}
+
+	return "???";
+}
+
+// GENERATED
+static const char *
+str_ipsec_level_uint8_t(ipsec_level_uint8_t val)
+{
+	static const struct val_str {
+		ipsec_level_uint8_t val;
+		const char *const str;
+	} pairs_val_str[] = {
+	    {IPSEC_LEVEL_DEFAULT, "IPSEC_LEVEL_DEFAULT"},
+	    {IPSEC_LEVEL_USE, "IPSEC_LEVEL_USE"},
+	    {IPSEC_LEVEL_REQUIRE, "IPSEC_LEVEL_REQUIRE"},
+	    {IPSEC_LEVEL_UNIQUE, "IPSEC_LEVEL_UNIQUE"},
+	    {0, NULL},
+	};
+
+	for (const struct val_str *ts = pairs_val_str; ts->str != NULL; ts++) {
+		if (ts->val == val)
+			return ts->str;
+	}
+
+	return "???";
+}
+
+// net/pfkeyv2.h
+
+// GENERATED
+static const char *
+str_pfkeyv2_version_uint8_t(pfkeyv2_version_uint8_t val)
+{
+	static const struct val_str {
+		pfkeyv2_version_uint8_t val;
+		const char *const str;
+	} pairs_val_str[] = {
+	    {PF_KEY_V2, "PF_KEY_V2"},
+	    {0, NULL},
+	};
+
+	for (const struct val_str *ts = pairs_val_str; ts->str != NULL; ts++) {
+		if (ts->val == val)
+			return ts->str;
+	}
+
+	return "???";
+}
+
+// GENERATED
+static const char *
+str_pfkeyv2_sadb_uint8_t(pfkeyv2_sadb_uint8_t val)
+{
+	static const struct val_str {
+		pfkeyv2_sadb_uint8_t val;
+		const char *const str;
+	} pairs_val_str[] = {
+	    {SADB_RESERVED, "SADB_RESERVED"},
+	    {SADB_GETSPI, "SADB_GETSPI"},
+	    {SADB_UPDATE, "SADB_UPDATE"},
+	    {SADB_ADD, "SADB_ADD"},
+	    {SADB_DELETE, "SADB_DELETE"},
+	    {SADB_GET, "SADB_GET"},
+	    {SADB_ACQUIRE, "SADB_ACQUIRE"},
+	    {SADB_REGISTER, "SADB_REGISTER"},
+	    {SADB_EXPIRE, "SADB_EXPIRE"},
+	    {SADB_FLUSH, "SADB_FLUSH"},
+	    {SADB_DUMP, "SADB_DUMP"},
+	    {SADB_X_PROMISC, "SADB_X_PROMISC"},
+	    {SADB_X_PCHANGE, "SADB_X_PCHANGE"},
+	    {SADB_X_SPDUPDATE, "SADB_X_SPDUPDATE"},
+	    {SADB_X_SPDADD, "SADB_X_SPDADD"},
+	    {SADB_X_SPDDELETE, "SADB_X_SPDDELETE"},
+	    {SADB_X_SPDGET, "SADB_X_SPDGET"},
+	    {SADB_X_SPDACQUIRE, "SADB_X_SPDACQUIRE"},
+	    {SADB_X_SPDDUMP, "SADB_X_SPDDUMP"},
+	    {SADB_X_SPDFLUSH, "SADB_X_SPDFLUSH"},
+	    {SADB_X_SPDSETIDX, "SADB_X_SPDSETIDX"},
+	    {SADB_X_SPDEXPIRE, "SADB_X_SPDEXPIRE"},
+	    {SADB_X_SPDDELETE2, "SADB_X_SPDDELETE2"},
+	    {SADB_X_NAT_T_NEW_MAPPING, "SADB_X_NAT_T_NEW_MAPPING"},
+	    {0, NULL},
+	};
+
+	for (const struct val_str *ts = pairs_val_str; ts->str != NULL; ts++) {
+		if (ts->val == val)
+			return ts->str;
+	}
+
+	return "???";
+}
+
+// GENERATED
+static const char *
+str_pfkeyv2_sadb_ext_uint16_t(pfkeyv2_sadb_ext_uint16_t val)
+{
+	static const struct val_str {
+		pfkeyv2_sadb_ext_uint16_t val;
+		const char *const str;
+	} pairs_val_str[] = {
+	    {SADB_EXT_RESERVED, "SADB_EXT_RESERVED"},
+	    {SADB_EXT_SA, "SADB_EXT_SA"},
+	    {SADB_EXT_LIFETIME_CURRENT, "SADB_EXT_LIFETIME_CURRENT"},
+	    {SADB_EXT_LIFETIME_HARD, "SADB_EXT_LIFETIME_HARD"},
+	    {SADB_EXT_LIFETIME_SOFT, "SADB_EXT_LIFETIME_SOFT"},
+	    {SADB_EXT_ADDRESS_SRC, "SADB_EXT_ADDRESS_SRC"},
+	    {SADB_EXT_ADDRESS_DST, "SADB_EXT_ADDRESS_DST"},
+	    {SADB_EXT_ADDRESS_PROXY, "SADB_EXT_ADDRESS_PROXY"},
+	    {SADB_EXT_KEY_AUTH, "SADB_EXT_KEY_AUTH"},
+	    {SADB_EXT_KEY_ENCRYPT, "SADB_EXT_KEY_ENCRYPT"},
+	    {SADB_EXT_IDENTITY_SRC, "SADB_EXT_IDENTITY_SRC"},
+	    {SADB_EXT_IDENTITY_DST, "SADB_EXT_IDENTITY_DST"},
+	    {SADB_EXT_SENSITIVITY, "SADB_EXT_SENSITIVITY"},
+	    {SADB_EXT_PROPOSAL, "SADB_EXT_PROPOSAL"},
+	    {SADB_EXT_SUPPORTED_AUTH, "SADB_EXT_SUPPORTED_AUTH"},
+	    {SADB_EXT_SUPPORTED_ENCRYPT, "SADB_EXT_SUPPORTED_ENCRYPT"},
+	    {SADB_EXT_SPIRANGE, "SADB_EXT_SPIRANGE"},
+	    {SADB_X_EXT_KMPRIVATE, "SADB_X_EXT_KMPRIVATE"},
+	    {SADB_X_EXT_POLICY, "SADB_X_EXT_POLICY"},
+	    {SADB_X_EXT_SA2, "SADB_X_EXT_SA2"},
+	    {SADB_X_EXT_NAT_T_TYPE, "SADB_X_EXT_NAT_T_TYPE"},
+	    {SADB_X_EXT_NAT_T_SPORT, "SADB_X_EXT_NAT_T_SPORT"},
+	    {SADB_X_EXT_NAT_T_DPORT, "SADB_X_EXT_NAT_T_DPORT"},
+	    {SADB_X_EXT_NAT_T_OAI, "SADB_X_EXT_NAT_T_OAI"},
+	    {SADB_X_EXT_NAT_T_OAR, "SADB_X_EXT_NAT_T_OAR"},
+	    {SADB_X_EXT_NAT_T_FRAG, "SADB_X_EXT_NAT_T_FRAG"},
+	    {0, NULL},
+	};
+
+	for (const struct val_str *ts = pairs_val_str; ts->str != NULL; ts++) {
+		if (ts->val == val)
+			return ts->str;
+	}
+
+	return "???";
+}
+
+// GENERATED
+static const char *
+str_pfkeyv2_sadb_satype_uint8_t(pfkeyv2_sadb_satype_uint8_t val)
+{
+	static const struct val_str {
+		pfkeyv2_sadb_satype_uint8_t val;
+		const char *const str;
+	} pairs_val_str[] = {
+	    {SADB_SATYPE_UNSPEC, "SADB_SATYPE_UNSPEC"},
+	    {SADB_SATYPE_AH, "SADB_SATYPE_AH"},
+	    {SADB_SATYPE_ESP, "SADB_SATYPE_ESP"},
+	    {SADB_SATYPE_RSVP, "SADB_SATYPE_RSVP"},
+	    {SADB_SATYPE_OSPFV2, "SADB_SATYPE_OSPFV2"},
+	    {SADB_SATYPE_RIPV2, "SADB_SATYPE_RIPV2"},
+	    {SADB_SATYPE_MIP, "SADB_SATYPE_MIP"},
+	    {SADB_X_SATYPE_IPCOMP, "SADB_X_SATYPE_IPCOMP"},
+	    {SADB_X_SATYPE_TCPSIGNATURE, "SADB_X_SATYPE_TCPSIGNATURE"},
+	    {SADB_SATYPE_MAX, "SADB_SATYPE_MAX"},
+	    {0, NULL},
+	};
+
+	for (const struct val_str *ts = pairs_val_str; ts->str != NULL; ts++) {
+		if (ts->val == val)
+			return ts->str;
+	}
+
+	return "???";
+}
+
+// GENERATED
+static const char *
+str_pfkeyv2_sadb_sastate_uint8_t(pfkeyv2_sadb_sastate_uint8_t val)
+{
+	static const struct val_str {
+		pfkeyv2_sadb_sastate_uint8_t val;
+		const char *const str;
+	} pairs_val_str[] = {
+	    {SADB_SASTATE_LARVAL, "SADB_SASTATE_LARVAL"},
+	    {SADB_SASTATE_MATURE, "SADB_SASTATE_MATURE"},
+	    {SADB_SASTATE_DYING, "SADB_SASTATE_DYING"},
+	    {SADB_SASTATE_DEAD, "SADB_SASTATE_DEAD"},
+	    {0, NULL},
+	};
+
+	for (const struct val_str *ts = pairs_val_str; ts->str != NULL; ts++) {
+		if (ts->val == val)
+			return ts->str;
+	}
+
+	return "???";
+}
+
+// GENERATED
+static const char *
+str_pfkeyv2_sadb_saflags_uint16_t(pfkeyv2_sadb_saflags_uint16_t val)
+{
+	static const struct val_str {
+		pfkeyv2_sadb_saflags_uint16_t val;
+		const char *const str;
+	} pairs_val_str[] = {
+	    {SADB_SAFLAGS_PFS, "SADB_SAFLAGS_PFS"},
+	    {0, NULL},
+	};
+
+	for (const struct val_str *ts = pairs_val_str; ts->str != NULL; ts++) {
+		if (ts->val == val)
+			return ts->str;
+	}
+
+	return "???";
+}
+
+// GENERATED
+static const char *
+str_pfkeyv2_sadb_aalg_uint8_t(pfkeyv2_sadb_aalg_uint8_t val)
+{
+	static const struct val_str {
+		pfkeyv2_sadb_aalg_uint8_t val;
+		const char *const str;
+	} pairs_val_str[] = {
+	    {SADB_AALG_NONE, "SADB_AALG_NONE"},
+	    {SADB_AALG_MD5HMAC, "SADB_AALG_MD5HMAC"},
+	    {SADB_AALG_SHA1HMAC, "SADB_AALG_SHA1HMAC"},
+	    {SADB_X_AALG_SHA2_256, "SADB_X_AALG_SHA2_256"},
+	    {SADB_X_AALG_SHA2_384, "SADB_X_AALG_SHA2_384"},
+	    {SADB_X_AALG_SHA2_512, "SADB_X_AALG_SHA2_512"},
+	    {SADB_X_AALG_RIPEMD160HMAC, "SADB_X_AALG_RIPEMD160HMAC"},
+	    {SADB_X_AALG_AES_XCBC_MAC, "SADB_X_AALG_AES_XCBC_MAC"},
+	    {SADB_X_AALG_AES128GMAC, "SADB_X_AALG_AES128GMAC"},
+	    {SADB_X_AALG_AES192GMAC, "SADB_X_AALG_AES192GMAC"},
+	    {SADB_X_AALG_AES256GMAC, "SADB_X_AALG_AES256GMAC"},
+	    {SADB_X_AALG_MD5, "SADB_X_AALG_MD5"},
+	    {SADB_X_AALG_SHA, "SADB_X_AALG_SHA"},
+	    {SADB_X_AALG_NULL, "SADB_X_AALG_NULL"},
+	    {SADB_X_AALG_TCP_MD5, "SADB_X_AALG_TCP_MD5"},
+	    {0, NULL},
+	};
+
+	for (const struct val_str *ts = pairs_val_str; ts->str != NULL; ts++) {
+		if (ts->val == val)
+			return ts->str;
+	}
+
+	return "???";
+}
+
+// GENERATED
+static const char *
+str_pfkeyv2_sadb_ealg_uint8_t(pfkeyv2_sadb_ealg_uint8_t val)
+{
+	static const struct val_str {
+		pfkeyv2_sadb_ealg_uint8_t val;
+		const char *const str;
+	} pairs_val_str[] = {
+	    {SADB_EALG_NONE, "SADB_EALG_NONE"},
+	    {SADB_EALG_DESCBC, "SADB_EALG_DESCBC"},
+	    {SADB_EALG_3DESCBC, "SADB_EALG_3DESCBC"},
+	    {SADB_EALG_NULL, "SADB_EALG_NULL"},
+	    {SADB_X_EALG_CAST128CBC, "SADB_X_EALG_CAST128CBC"},
+	    {SADB_X_EALG_BLOWFISHCBC, "SADB_X_EALG_BLOWFISHCBC"},
+	    {SADB_X_EALG_AES, "SADB_X_EALG_AES"},
+	    {SADB_X_EALG_AESCTR, "SADB_X_EALG_AESCTR"},
+	    {SADB_X_EALG_AESGCM8, "SADB_X_EALG_AESGCM8"},
+	    {SADB_X_EALG_AESGCM12, "SADB_X_EALG_AESGCM12"},
+	    {SADB_X_EALG_AESGCM16, "SADB_X_EALG_AESGCM16"},
+	    {SADB_X_EALG_CAMELLIACBC, "SADB_X_EALG_CAMELLIACBC"},
+	    {SADB_X_EALG_AESGMAC, "SADB_X_EALG_AESGMAC"},
+	    {SADB_X_EALG_SKIPJACK, "SADB_X_EALG_SKIPJACK"},
+	    {0, NULL},
+	};
+
+	for (const struct val_str *ts = pairs_val_str; ts->str != NULL; ts++) {
+		if (ts->val == val)
+			return ts->str;
+	}
+
+	return "???";
+}
+
+// GENERATED
+static const char *
+str_pfkeyv2_sadb_x_calg_int_t(pfkeyv2_sadb_x_calg_int_t val)
+{
+	static const struct val_str {
+		pfkeyv2_sadb_x_calg_int_t val;
+		const char *const str;
+	} pairs_val_str[] = {
+	    {SADB_X_CALG_NONE, "SADB_X_CALG_NONE"},
+	    {SADB_X_CALG_OUI, "SADB_X_CALG_OUI"},
+	    {SADB_X_CALG_DEFLATE, "SADB_X_CALG_DEFLATE"},
+	    {SADB_X_CALG_LZS, "SADB_X_CALG_LZS"},
+	    {SADB_X_CALG_MAX, "SADB_X_CALG_MAX"},
+	    {0, NULL},
+	};
+
+	for (const struct val_str *ts = pairs_val_str; ts->str != NULL; ts++) {
+		if (ts->val == val)
+			return ts->str;
+	}
+
+	return "???";
+}
+
+// GENERATED
+static const char *
+str_pfkeyv2_sadb_identtype_int_t(pfkeyv2_sadb_identtype_int_t val)
+{
+	static const struct val_str {
+		pfkeyv2_sadb_identtype_int_t val;
+		const char *const str;
+	} pairs_val_str[] = {
+	    {SADB_IDENTTYPE_RESERVED, "SADB_IDENTTYPE_RESERVED"},
+	    {SADB_IDENTTYPE_PREFIX, "SADB_IDENTTYPE_PREFIX"},
+	    {SADB_IDENTTYPE_FQDN, "SADB_IDENTTYPE_FQDN"},
+	    {SADB_IDENTTYPE_USERFQDN, "SADB_IDENTTYPE_USERFQDN"},
+	    {SADB_X_IDENTTYPE_ADDR, "SADB_X_IDENTTYPE_ADDR"},
+	    {0, NULL},
+	};
+
+	for (const struct val_str *ts = pairs_val_str; ts->str != NULL; ts++) {
+		if (ts->val == val)
+			return ts->str;
+	}
+
+	return "???";
+}
+
+// GENERATED
+static const char *
+str_pfkeyv2_sadb_lifetime_uint16_t(pfkeyv2_sadb_lifetime_uint16_t val)
+{
+	static const struct val_str {
+		pfkeyv2_sadb_lifetime_uint16_t val;
+		const char *const str;
+	} pairs_val_str[] = {
+	    {SADB_X_LIFETIME_ALLOCATIONS, "SADB_X_LIFETIME_ALLOCATIONS"},
+	    {SADB_X_LIFETIME_BYTES, "SADB_X_LIFETIME_BYTES"},
+	    {SADB_X_LIFETIME_ADDTIME, "SADB_X_LIFETIME_ADDTIME"},
+	    {SADB_X_LIFETIME_USETIME, "SADB_X_LIFETIME_USETIME"},
+	    {0, NULL},
+	};
+
+	for (const struct val_str *ts = pairs_val_str; ts->str != NULL; ts++) {
+		if (ts->val == val)
+			return ts->str;
+	}
+
+	return "???";
+}
+
+// -----------------------------------------------------------------------------
+
 /* %%%: about struct sadb_msg */
 void
 kdebug_sadb(struct sadb_msg *base)
@@ -120,19 +686,52 @@ kdebug_sadb(struct sadb_msg *base)
 	if (base == NULL)
 		panic("kdebug_sadb: NULL pointer was passed.\n");
 
+#if 0
 	printf("sadb_msg{ version=%u type=%u errno=%u satype=%u\n",
 	    base->sadb_msg_version, base->sadb_msg_type,
 	    base->sadb_msg_errno, base->sadb_msg_satype);
 	printf("  len=%u reserved=%u seq=%u pid=%u\n",
 	    base->sadb_msg_len, base->sadb_msg_reserved,
 	    base->sadb_msg_seq, base->sadb_msg_pid);
+#else
+	usleep(10000);
+	if (base->sadb_msg_version != PF_KEY_V2)
+		printf("\x1b[31msadb_msg_version: %u\x1b[0m\n", base->sadb_msg_version);
+	if (base->sadb_msg_reserved != 0)
+		printf("\x1b[31msadb_msg_reserved: %u\x1b[0m\n", base->sadb_msg_reserved);
+
+	printf("sadb_base{ %s(%u)",
+	    str_pfkeyv2_sadb_uint8_t(base->sadb_msg_type), base->sadb_msg_type);
+
+	if (base->sadb_msg_errno != 0) {
+		printf(" %s(%u)",
+		    str_errno_int_t((int)base->sadb_msg_errno),
+		    base->sadb_msg_errno);
+	}
+
+	printf(" %s(%u)",
+	    str_pfkeyv2_sadb_satype_uint8_t(base->sadb_msg_satype),
+	    base->sadb_msg_satype);
+
+	printf(" len=%u seq=%u pid=%u }\n",
+	    base->sadb_msg_len, base->sadb_msg_seq, base->sadb_msg_pid);
+#endif
+
 
 	tlen = PFKEY_UNUNIT64(base->sadb_msg_len) - sizeof(struct sadb_msg);
 	ext = (void *)((caddr_t)(void *)base + sizeof(struct sadb_msg));
 
 	while (tlen > 0) {
+		// TODO: iked: 64? // pfkey_init() -> pfkey_block() -> pfkey_flow(): BUG?
+		// TODO: here: iked -dddddvvvvv
+#if 0
 		printf("sadb_ext{ len=%u type=%u }\n",
 		    PFKEY_UNUNIT64(ext->sadb_ext_len), ext->sadb_ext_type);
+#else
+		printf("sadb_ext{ len=%u type=%s(%u) }\n",
+		    PFKEY_UNUNIT64(ext->sadb_ext_len),
+		    str_pfkeyv2_sadb_ext_uint16_t(ext->sadb_ext_type), ext->sadb_ext_type);
+#endif
 
 		if (ext->sadb_ext_len == 0) {
 			printf("kdebug_sadb: invalid ext_len=0 was passed.\n");
@@ -329,6 +928,7 @@ kdebug_sadb_supported(struct sadb_ext *ext)
 	len = (PFKEY_UNUNIT64(sup->sadb_supported_len) - sizeof(*sup))
 		/ sizeof(*alg);
 	alg = (void *)(sup + 1);
+#if 0
 	printf("sadb_sup{\n");
 	while (len--) {
 		printf("  { id=%d ivlen=%d min=%d max=%d }\n",
@@ -337,6 +937,9 @@ kdebug_sadb_supported(struct sadb_ext *ext)
 		alg++;
 	}
 	printf("}\n");
+#else
+	printf("sadb_sup{ ... }\n");
+#endif
 
 	return;
 }
@@ -350,12 +953,21 @@ kdebug_sadb_lifetime(struct sadb_ext *ext)
 	if (ext == NULL)
 		printf("kdebug_sadb_lifetime: NULL pointer was passed.\n");
 
+#if 0
 	printf("sadb_lifetime{ alloc=%u, bytes=%u\n",
 		lft->sadb_lifetime_allocations,
 		(u_int32_t)lft->sadb_lifetime_bytes);
 	printf("  addtime=%u, usetime=%u }\n",
 		(u_int32_t)lft->sadb_lifetime_addtime,
 		(u_int32_t)lft->sadb_lifetime_usetime);
+#else
+	printf("sadb_lifetime{ alloc=%u, bytes=%u",
+	    lft->sadb_lifetime_allocations,
+	    (u_int32_t)lft->sadb_lifetime_bytes);
+	printf(" addtime=%u, usetime=%u }\n",
+	    (u_int32_t)lft->sadb_lifetime_addtime,
+	    (u_int32_t)lft->sadb_lifetime_usetime);
+#endif
 
 	return;
 }
@@ -369,11 +981,19 @@ kdebug_sadb_sa(struct sadb_ext *ext)
 	if (ext == NULL)
 		panic("kdebug_sadb_sa: NULL pointer was passed.\n");
 
+#if 0
 	printf("sadb_sa{ spi=%u replay=%u state=%u\n",
 	    (u_int32_t)ntohl(sa->sadb_sa_spi), sa->sadb_sa_replay,
 	    sa->sadb_sa_state);
 	printf("  auth=%u encrypt=%u flags=0x%08x }\n",
 	    sa->sadb_sa_auth, sa->sadb_sa_encrypt, sa->sadb_sa_flags);
+#else
+	printf("sadb_sa{ spi=%u replay=%u state=%u",
+	    (u_int32_t)ntohl(sa->sadb_sa_spi), sa->sadb_sa_replay,
+	    sa->sadb_sa_state);
+	printf(" auth=%u encrypt=%u flags=0x%08x }\n",
+	    sa->sadb_sa_auth, sa->sadb_sa_encrypt, sa->sadb_sa_flags);
+#endif
 
 	return;
 }
@@ -387,10 +1007,18 @@ kdebug_sadb_address(struct sadb_ext *ext)
 	if (ext == NULL)
 		panic("kdebug_sadb_address: NULL pointer was passed.\n");
 
+	if (addr->sadb_address_reserved != 0)
+		printf("\x1b[31msadb_address_reserved: %u\x1b[0m\n", addr->sadb_address_reserved);
+
+#if 0
 	printf("sadb_address{ proto=%u prefixlen=%u reserved=0x%02x%02x }\n",
 	    addr->sadb_address_proto, addr->sadb_address_prefixlen,
 	    ((u_char *)(void *)&addr->sadb_address_reserved)[0],
 	    ((u_char *)(void *)&addr->sadb_address_reserved)[1]);
+#else
+	printf("sadb_address{ proto=%u prefixlen=%u }\n",
+	    addr->sadb_address_proto, addr->sadb_address_prefixlen);
+#endif
 
 	kdebug_sockaddr((void *)((caddr_t)(void *)ext + sizeof(*addr)));
 
@@ -433,11 +1061,19 @@ kdebug_sadb_x_sa2(struct sadb_ext *ext)
 	if (ext == NULL)
 		panic("kdebug_sadb_x_sa2: NULL pointer was passed.\n");
 
+#if 0
 	printf("sadb_x_sa2{ mode=%u reqid=%u\n",
 	    sa2->sadb_x_sa2_mode, sa2->sadb_x_sa2_reqid);
 	printf("  reserved1=%u reserved2=%u sequence=%u }\n",
 	    sa2->sadb_x_sa2_reserved1, sa2->sadb_x_sa2_reserved2,
 	    sa2->sadb_x_sa2_sequence);
+#else
+	printf("sadb_x_sa2{ mode=%u reqid=%u",
+	    sa2->sadb_x_sa2_mode, sa2->sadb_x_sa2_reqid);
+	printf(" reserved1=%u reserved2=%u sequence=%u }\n",
+	    sa2->sadb_x_sa2_reserved1, sa2->sadb_x_sa2_reserved2,
+	    sa2->sadb_x_sa2_sequence);
+#endif
 
 	return;
 }
@@ -452,6 +1088,7 @@ kdebug_sadb_x_policy(struct sadb_ext *ext)
 	if (ext == NULL)
 		panic("kdebug_sadb_x_policy: NULL pointer was passed.\n");
 
+#if 0
 #ifdef HAVE_PFKEY_POLICY_PRIORITY
 	printf("sadb_x_policy{ type=%u dir=%u id=%x priority=%u }\n",
 #else
@@ -463,6 +1100,12 @@ kdebug_sadb_x_policy(struct sadb_ext *ext)
 #else
 		xpl->sadb_x_policy_id);
 #endif
+#else // 0
+	printf("sadb_x_policy{ %s(%u) %s(%u) id=%x }\n",
+	    str_ipsec_policy_uint16_t(xpl->sadb_x_policy_type), xpl->sadb_x_policy_type,
+	    str_ipsec_dir_uint8_t(xpl->sadb_x_policy_dir), xpl->sadb_x_policy_dir,
+	    xpl->sadb_x_policy_id);
+#endif // 0
 
 	if (xpl->sadb_x_policy_type == IPSEC_POLICY_IPSEC) {
 		int tlen;
@@ -472,12 +1115,21 @@ kdebug_sadb_x_policy(struct sadb_ext *ext)
 		xisr = (void *)(xpl + 1);
 
 		while (tlen > 0) {
+#if 0
 			printf(" { len=%u proto=%u mode=%u level=%u reqid=%u\n",
 				xisr->sadb_x_ipsecrequest_len,
 				xisr->sadb_x_ipsecrequest_proto,
 				xisr->sadb_x_ipsecrequest_mode,
 				xisr->sadb_x_ipsecrequest_level,
 				xisr->sadb_x_ipsecrequest_reqid);
+#else
+			printf(" { len=%u proto=%u mode=%s(%u) level=%u reqid=%u\n",
+			    xisr->sadb_x_ipsecrequest_len,
+			    xisr->sadb_x_ipsecrequest_proto,
+			    str_ipsec_mode_uint8_t(xisr->sadb_x_ipsecrequest_mode), xisr->sadb_x_ipsecrequest_mode,
+			    xisr->sadb_x_ipsecrequest_level,
+			    xisr->sadb_x_ipsecrequest_reqid);
+#endif
 
 			if (xisr->sadb_x_ipsecrequest_len > sizeof(*xisr)) {
 				addr = (void *)(xisr + 1);
@@ -838,6 +1490,7 @@ kdebug_sockaddr(struct sockaddr *addr)
 	struct sockaddr_in6 *sin6;
 #endif
 
+#if 0
 	/* sanity check */
 	if (addr == NULL)
 		panic("kdebug_sockaddr: NULL pointer was passed.\n");
@@ -863,6 +1516,27 @@ kdebug_sockaddr(struct sockaddr *addr)
 	}
 
 	printf("  }\n");
+#else
+	char buf1[128];
+	char buf2[30];
+
+#if 0
+	// dependall ===> sbin/ping
+	// #      link  ping/ping
+	// /home/wsh/qc/netbsd/zgt/bin/x86_64--netbsd-gcc    --sysroot=/home/wsh/qc/netbsd/zgdest.amd64   -pie  -shared-libgcc  -Wl,--warn-shared-textrel -Wl,-z,relro     -o ping  ping.o ping_hostops.o  -Wl,-dynamic-linker=/libexec/ld.elf_so -Wl,-rpath,/lib  -L=/lib -lm -lipsec
+	// /home/wsh/qc/netbsd/zgt/lib/gcc/x86_64--netbsd/8.3.0/../../../../x86_64--netbsd/bin/ld: /home/wsh/qc/netbsd/zgdest.amd64/lib/libipsec.so: undefined reference to `sockaddr_snprintf'
+	// collect2: error: ld returned 1 exit status
+	// *** [ping] Error code 1
+	sockaddr_snprintf(buf1, sizeof(buf1), "%a", addr);
+	sockaddr_snprintf(buf2, sizeof(buf2), "%D", addr);
+#else
+	strncpy(buf1, "???", sizeof(buf1) - 1);
+	strncpy(buf2, "???", sizeof(buf2) - 1);
+#endif
+
+	printf("sockaddr{ %s }\n", buf1);
+	// printf("sockaddr{ %s (%s) }\n", buf1, buf2);
+#endif
 
 	return;
 }

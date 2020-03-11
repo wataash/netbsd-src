@@ -280,6 +280,24 @@ struct _m_ext {
 
 #define M_PADDR_INVALID		POOL_PADDR_INVALID
 
+/// http://www.nerv.org/~ryo/files/mbuf/mbuf.html
+/// http://www.wdic.org/w/TECH/mbuf
+
+// TODO: old
+// // m->m_hdr.mh_data == &m->M_dat.M_databuf[196]
+// // 196 + 28 (== m->m_hdr.mh_len) = 224 (== sizeof(m->M_dat.M_databuf))
+// #define	MBUF_DEFINE(name, mhlen, mlen)
+
+// TODO: old
+// // if (m_flags & M_PKTHDR)
+// #define	m_pkthdr	M_dat.MH.MH_pkthdr
+// // if (m_flags & M_PKTHDR) && maybe if M_EXT
+// #define	m_ext_storage	M_dat.MH.MH_dat.MH_ext.ext_storage
+// // if (m_flags & M_PKTHDR) && maybe if !M_EXT
+// #define	m_pktdat	M_dat.MH.MH_dat.MH_databuf
+// // if (!(m_flags & M_PKTHDR))
+// #define	m_dat		M_dat.M_databuf
+
 /*
  * Definition of "struct mbuf".
  * Don't change this without understanding how MHLEN/MLEN are defined.
@@ -319,6 +337,14 @@ struct _m_ext {
  */
 MBUF_DEFINE(_mbuf_dummy, 1, 1);
 
+// TODO: old
+// // 224 on i386
+// #define	MLEN		(MSIZE - offsetof(struct _mbuf_dummy, m_dat))
+// // 200 on i386
+// #define	MHLEN		(MSIZE - offsetof(struct _mbuf_dummy, m_pktdat))
+// // 425 on i386
+// #define	MINCLSIZE	(MHLEN+MLEN+1)	/* smallest amount to put in cluster */
+
 /* normal data len */
 #define MLEN		((int)(MSIZE - offsetof(struct _mbuf_dummy, m_dat)))
 /* data len w/pkthdr */
@@ -330,6 +356,21 @@ MBUF_DEFINE(_mbuf_dummy, 1, 1);
  * The *real* struct mbuf
  */
 MBUF_DEFINE(mbuf, MHLEN, MLEN);
+
+// i386:
+// struct mbuf {
+// 	struct m_hdr m_hdr;
+// 	union {
+// 		struct {
+// 			struct pkthdr MH_pkthdr;
+// 			union {
+// 				struct _m_ext MH_ext;
+// 				char MH_databuf[200];
+// 			} MH_dat;
+// 		} MH;
+// 		char M_databuf[224];
+// 	} M_dat;
+// }
 
 /* mbuf flags */
 #define M_EXT		0x00000001	/* has associated external storage */

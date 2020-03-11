@@ -158,28 +158,38 @@ struct secspacq {
 /* buffer size for ipsec_logsastr() */
 #define	IPSEC_LOGSASTRLEN	192
 
+// tdef:begin
+typedef uint8_t ipsec_proto_uint8_t;
 /* according to IANA assignment, port 0x0000 and proto 0xff are reserved. */
 #define IPSEC_PORT_ANY		0
+// tdef:next-ignore
 #define IPSEC_ULPROTO_ANY	255
 #define IPSEC_PROTO_ANY		255
+// tdef:end
 
+// tdef:begin
+typedef uint8_t ipsec_mode_uint8_t;
 /* mode of security protocol */
 /* NOTE: DON'T use IPSEC_MODE_ANY at SPD.  It's only use in SAD */
 #define	IPSEC_MODE_ANY		0	/* i.e. wildcard. */
 #define	IPSEC_MODE_TRANSPORT	1
 #define	IPSEC_MODE_TUNNEL	2
 #define	IPSEC_MODE_TCPMD5	3	/* TCP MD5 mode */
+// tdef:end
 
 /*
  * Direction of security policy.
  * NOTE: Since INVALID is used just as flag.
  * The other are used for loop counter too.
  */
+// tdef:begin
+typedef uint8_t ipsec_dir_uint8_t;
 #define IPSEC_DIR_ANY		0
 #define IPSEC_DIR_INBOUND	1
 #define IPSEC_DIR_OUTBOUND	2
 #define IPSEC_DIR_MAX		3
 #define IPSEC_DIR_INVALID	4
+// tdef:end
 
 #define IPSEC_DIR_IS_VALID(dir)		((dir) >= 0 && (dir) <= IPSEC_DIR_MAX)
 #define IPSEC_DIR_IS_INOROUT(dir)	((dir) == IPSEC_DIR_INBOUND || \
@@ -191,17 +201,23 @@ struct secspacq {
  * DISCARD, IPSEC and NONE are allowed for setkey() in SPD.
  * DISCARD and NONE are allowed for system default.
  */
+// tdef:begin
+typedef uint16_t ipsec_policy_uint16_t;
 #define IPSEC_POLICY_DISCARD	0	/* discarding packet */
 #define IPSEC_POLICY_NONE	1	/* through IPsec engine */
 #define IPSEC_POLICY_IPSEC	2	/* do IPsec */
 #define IPSEC_POLICY_ENTRUST	3	/* consulting SPD if present. */
 #define IPSEC_POLICY_BYPASS	4	/* only for privileged socket. */
+// tdef:end
 
 /* Security protocol level */
+// tdef:begin
+typedef uint8_t ipsec_level_uint8_t; // TODO: size
 #define	IPSEC_LEVEL_DEFAULT	0	/* reference to system default */
 #define	IPSEC_LEVEL_USE		1	/* use SA if present. */
 #define	IPSEC_LEVEL_REQUIRE	2	/* require SA. */
 #define	IPSEC_LEVEL_UNIQUE	3	/* unique SA. */
+// tdef:end
 
 #define IPSEC_MANUAL_REQID_MAX	0x3fff
 				/*

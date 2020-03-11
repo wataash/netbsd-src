@@ -15,3 +15,5 @@ SHLIB_MINOR=	2
 WARNS?=		4
 
 .PATH:		${LIBEVENT_DIST} ${LIBEVENT_DIST}/include
+
+CFLAGS+=	-ggdb3

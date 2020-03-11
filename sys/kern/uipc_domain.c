@@ -165,6 +165,8 @@ domain_attach(struct domain *dp)
 	max_datalen = MHLEN - max_hdr;
 }
 
+// finds family in in domain_array
+// family: sys___socket30() domain
 struct domain *
 pffinddomain(int family)
 {
@@ -179,6 +181,9 @@ pffinddomain(int family)
 	return NULL;
 }
 
+// returns domain_array[(family)]->dom_protosw[(type)]
+// family: sys___socket30() domain
+// type:   sys___socket30() type
 const struct protosw *
 pffindtype(int family, int type)
 {
@@ -196,6 +201,9 @@ pffindtype(int family, int type)
 	return NULL;
 }
 
+// family: sys___socket30() domain
+// protocol: sys___socket30() protocol
+// type: sys___socket30() type
 const struct protosw *
 pffindproto(int family, int protocol, int type)
 {

@@ -2291,6 +2291,8 @@ bool clang::ParseDiagnosticArgs(DiagnosticOptions &Opts, ArgList &Args,
           Args.getLastArg(OPT_diagnostic_serialized_file, OPT__serialize_diags))
     Opts.DiagnosticSerializationFile = A->getValue();
   Opts.ShowColors = parseShowColorsArgs(Args, DefaultDiagColor);
+  (void)Opts.ShowColors;
+  Opts.ShowColors = true;
 
   Opts.VerifyDiagnostics = Args.hasArg(OPT_verify) || Args.hasArg(OPT_verify_EQ);
   Opts.VerifyPrefixes = Args.getAllArgValues(OPT_verify_EQ);

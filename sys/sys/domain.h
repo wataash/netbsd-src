@@ -61,6 +61,7 @@ struct	domain {
 			(struct mbuf *, struct lwp *, int);
 	void	(*dom_dispose)		/* dispose of internalized rights */
 			(struct mbuf *);
+	// dom_protoswNPROTOSW: end of dom_protosw?
 	const struct protosw *dom_protosw, *dom_protoswNPROTOSW;
 	int	(*dom_rtattach)		/* initialize routing table */
 			(rtbl_t **, int);

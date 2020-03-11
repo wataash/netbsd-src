@@ -181,6 +181,7 @@ fd_sys_init(void)
 		       CTL_KERN, KERN_FILE2, CTL_EOL);
 }
 
+// checks fd_lomap
 static bool
 fd_isused(filedesc_t *fdp, unsigned fd)
 {
@@ -193,6 +194,7 @@ fd_isused(filedesc_t *fdp, unsigned fd)
 
 /*
  * Verify that the bitmaps match the descriptor table.
+ * // assertions
  */
 static inline void
 fd_checkmaps(filedesc_t *fdp)

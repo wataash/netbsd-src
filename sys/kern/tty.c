@@ -812,6 +812,7 @@ ttyinput(int c, struct tty *tp)
 	 * Unless the receiver is enabled, drop incoming data.
 	 */
 	if (!ISSET(tp->t_cflag, CREAD))
+		// ?
 		return (0);
 
 	mutex_spin_enter(&tty_lock);

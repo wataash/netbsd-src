@@ -32,6 +32,7 @@
 #include <sys/types.h>
 
 struct cpu_info;
+// where is struct percpu defined?
 typedef struct percpu percpu_t;
 
 typedef struct percpu_cpu {

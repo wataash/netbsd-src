@@ -52,6 +52,7 @@ struct sockaddr_inarp {
 	struct	  in_addr sin_srcaddr;
 	u_int16_t sin_tos;
 	u_int16_t sin_other;
+// proxy arp
 #define SIN_PROXY 1
 };
 

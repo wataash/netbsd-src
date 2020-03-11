@@ -166,6 +166,7 @@ usage(int only_version)
 int
 main(int argc, char **argv)
 {
+	// setbuf(stdout, NULL);
 	FILE *fp = stdin;
 	const char *fname = "<stdin>";
 	int c;
@@ -428,7 +429,9 @@ promisc(void)
 				0)) < 0) {
 			err(1, "recv");
 		}
+#if 0
 		printdate();
+#endif
 		if (f_hexdump) {
 			int i;
 			for (i = 0; i < l; i++) {
@@ -449,8 +452,11 @@ promisc(void)
 				base = NULL;
 		}
 		if (base) {
+			printdate();
 			kdebug_sadb(base);
+#if 0
 			printf("\n");
+#endif
 			fflush(stdout);
 		}
 	}
@@ -1017,14 +1023,23 @@ printdate(void)
 	if (f_tflag == 1) {
 		/* Default */
 		s = (tp.tv_sec + thiszone) % 86400;
+#if 0
+		// 11:11:51.376933
 		printf("%02d:%02d:%02d.%06u ",
 		    s / 3600, (s % 3600) / 60, s % 60, (uint32_t)tp.tv_usec);
+#else
+		// 11:11:51.376
+		printf("%02d:%02d:%02d.%03u ",
+		    s / 3600, (s % 3600) / 60, s % 60, (uint32_t)(tp.tv_usec / 1000));
+#endif
 	} else if (f_tflag > 1) {
 		/* Unix timeval style */
 		printf("%u.%06u ", (uint32_t)tp.tv_sec, (uint32_t)tp.tv_usec);
 	}
 
+#if 0
 	printf("\n");
+#endif
 }
 
 /*

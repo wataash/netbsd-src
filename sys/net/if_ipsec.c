@@ -962,6 +962,8 @@ if_ipsec_encap_common(struct ipsec_variant *var, struct encap_funcs *funcs)
 	switch (var->iv_psrc->sa_family) {
 #ifdef INET
 	case AF_INET:
+		if (funcs->ef_inet != ipsecif4_attach)
+			asm("nop");
 		error = (funcs->ef_inet)(var);
 		break;
 #endif /* INET */
@@ -1063,6 +1065,8 @@ if_ipsec_set_tunnel(struct ifnet *ifp,
 		goto out;
 	}
 
+	if (ovar->iv_pdst || ovar->iv_psrc)
+		asm("nop");
 	/*
 	 * (1-1) Check the argument src and dst address pair will change
 	 *       configuration from current src and dst address pair.
@@ -1519,6 +1523,7 @@ if_ipsec_set_sadb_addr(struct sadb_address *saaddr, struct sockaddr *addr,
 	switch (addr->sa_family) {
 #ifdef INET
 	case AF_INET:
+		// should use PFKEY_UNUNIT64?
 		saaddr->sadb_address_prefixlen = sizeof(struct in_addr) << 3;
 		break;
 #endif /* INET */
@@ -1871,6 +1876,8 @@ if_ipsec_replace_sp(struct ipsec_softc *sc, struct ipsec_variant *ovar,
 	}
 	if (src && dst)
 		error = if_ipsec_add_sp(nvar, src, src_port, dst, dst_port);
+	else
+		asm("nop");
 
 	return error;
 }

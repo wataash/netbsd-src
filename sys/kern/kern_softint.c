@@ -768,6 +768,7 @@ softint_thread(void *cookie)
 void
 softint_dispatch(lwp_t *pinned, int s)
 {
+	// pinned? meant to going to be pinned?  s?
 	struct bintime now;
 	u_int timing;
 	lwp_t *l;
@@ -790,6 +791,7 @@ softint_dispatch(lwp_t *pinned, int s)
 	}
 #endif
 
+	// ??
 	/*
 	 * Note the interrupted LWP, and mark the current LWP as running
 	 * before proceeding.  Although this must as a rule be done with

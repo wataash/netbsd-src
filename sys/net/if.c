@@ -238,6 +238,7 @@ static void if_down_deactivated(struct ifnet *);
 
 struct if_percpuq {
 	struct ifnet	*ipq_ifp;
+	// si?
 	void		*ipq_si;
 	struct percpu	*ipq_ifqs;	/* struct ifqueue */
 };

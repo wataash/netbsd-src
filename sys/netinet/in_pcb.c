@@ -29,6 +29,8 @@
  * SUCH DAMAGE.
  */
 
+// #pragma GCC optimize ("O0")
+
 /*-
  * Copyright (c) 1998, 2011 The NetBSD Foundation, Inc.
  * All rights reserved.

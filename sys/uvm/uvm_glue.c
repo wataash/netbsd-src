@@ -513,6 +513,7 @@ uvm_scheduler(void)
 
 		/* Calculate process statistics. */
 		sched_pstats();
+		// switch 2
 		(void)kpause("uvm", false, hz, NULL);
 	}
 }

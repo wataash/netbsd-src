@@ -83,9 +83,14 @@ TAILQ_HEAD(soqhead, socket);
  * Variables for socket buffering.
  */
 struct sockbuf {
+	// selinit(&so->so_rcv.sb_sel);
+	// selinit(&so->so_snd.sb_sel);
 	struct selinfo sb_sel;		/* process selecting read/write */
 	struct mowner *sb_mowner;	/* who owns data for this sockbuf */
+	// back pointer: pointer to parent
 	struct socket *sb_so;		/* back pointer to socket */
+	// cv_init(&so->so_rcv.sb_cv, "netio");
+	// cv_init(&so->so_snd.sb_cv, "netio");
 	kcondvar_t sb_cv;		/* notifier */
 	/* When re-zeroing this struct, we zero from sb_startzero to the end */
 #define	sb_startzero	sb_cc
@@ -131,12 +136,14 @@ struct sockaddr;
 
 struct socket {
 	kmutex_t * volatile so_lock;	/* pointer to lock on structure */
+	// cv_init(&so->so_cv, "socket");
 	kcondvar_t	so_cv;		/* notifier */
 	short		so_type;	/* generic type, see socket.h */
 	short		so_options;	/* from socket call, see socket.h */
 	u_short		so_linger;	/* time to linger while closing */
 	short		so_state;	/* internal state flags SS_*, below */
 	int		so_unused;	/* used to be so_nbio */
+	// inp = sotoinpcb(so); in6p = sotoin6pcb(so); ...
 	void		*so_pcb;	/* protocol control block */
 	const struct protosw *so_proto;	/* protocol handle */
 /*
@@ -152,7 +159,9 @@ struct socket {
  */
 	struct socket	*so_head;	/* back pointer to accept socket */
 	struct soqhead	*so_onq;	/* queue (q or q0) that we're on */
+	// TAILQ_INIT(&so->so_q0);
 	struct soqhead	so_q0;		/* queue of partial connections */
+	// TAILQ_INIT(&so->so_q);
 	struct soqhead	so_q;		/* queue of incoming connections */
 	TAILQ_ENTRY(socket) so_qe;	/* our queue entry (q or q0) */
 	short		so_q0len;	/* partials on so_q0 */
@@ -164,7 +173,11 @@ struct socket {
 	u_short		so_aborting;	/* references from soabort() */
 	pid_t		so_pgid;	/* pgid for signals */
 	u_long		so_oobmark;	/* chars to oob mark */
+	// cv_init(&so->so_snd.sb_cv, "netio");
+	// selinit(&so->so_snd.sb_sel);
 	struct sockbuf	so_snd;		/* send buffer */
+	// cv_init(&so->so_rcv.sb_cv, "netio");
+	// selinit(&so->so_rcv.sb_sel);
 	struct sockbuf	so_rcv;		/* receive buffer */
 
 	void		*so_internal;	/* Space for svr4 stream data */
@@ -204,6 +217,7 @@ struct socket {
 					 */
 #define	SS_ISDISCONNECTED	0x800	/* socket disconnected from peer */
 #define	SS_ISAPIPE 		0x1000	/* socket is implementing a pipe */
+// if SOCK_NONBLOCK
 #define	SS_NBIO			0x2000	/* socket is in non blocking I/O */
 
 #ifdef _KERNEL

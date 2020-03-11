@@ -272,6 +272,16 @@ main(void)
 	CPU_INFO_ITERATOR cii;
 	struct cpu_info *ci;
 
+#if 0
+	// @wataash:debug-init 4
+	for (;;) {
+		volatile bool break_ = false;
+		if (break_)
+			break;
+		asm("nop");
+	}
+#endif
+
 #ifdef DIAGNOSTIC
 	/*
 	 * Verify that CPU_INFO_FOREACH() knows about the boot CPU
@@ -749,6 +759,7 @@ main(void)
 	mutex_exit(&proc_lock);
 
 	/* The scheduler is an infinite loop. */
+	// switch 1
 	uvm_scheduler();
 	/* NOTREACHED */
 }

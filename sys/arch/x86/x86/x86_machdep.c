@@ -353,6 +353,7 @@ cpu_need_proftick(struct lwp *l)
 	aston(l);
 }
 
+// true if curlwp->l_cpu->ci_idepth (likely == curlwp->l_ncsw) >= 0
 bool
 cpu_intr_p(void)
 {

@@ -236,6 +236,8 @@ static const char * const prcorequests[] = {
 #ifdef _KERNEL
 
 struct pr_usrreqs {
+	// PR_WRAP_USRREQS(tcp)
+	// #define	tcp_attach	tcp_attach_wrapper
 	int	(*pr_attach)(struct socket *, int);
 	void	(*pr_detach)(struct socket *);
 	int	(*pr_accept)(struct socket *, struct sockaddr *);

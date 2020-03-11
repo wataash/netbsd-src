@@ -126,6 +126,7 @@ typedef struct fdfile {
 typedef struct fdtab {
 	u_int		dt_nfiles;	/* number of open files allocated */
 	struct fdtab	*dt_link;	/* for lists of dtab */
+	// first 6 (NDFDFILE) files are fd_dfdfile
 	fdfile_t	*dt_ff[NDFILE];	/* file structures for open fds */
 } fdtab_t;
 
@@ -133,6 +134,7 @@ typedef struct filedesc {
 	/*
 	 * Built-in fdfile_t records first, since they have strict
 	 * alignment requirements.
+	 * // Descriptor FD File
 	 */
 	uint8_t		fd_dfdfile[NDFDFILE][FDFILE_SIZE];
 	/*
@@ -141,10 +143,12 @@ typedef struct filedesc {
 	kmutex_t	fd_lock;	/* lock on structure */
 	fdtab_t * volatile fd_dt;	/* active descriptor table */
 	uint32_t	*fd_himap;	/* each bit points to 32 fds */
+	// used in fd_isused()
 	uint32_t	*fd_lomap;	/* bitmap of free fds */
 	struct klist	*fd_knhash;	/* hash of attached non-fd knotes */
 	int		fd_lastkqfile;	/* max descriptor for kqueue */
 	int		fd_lastfile;	/* high-water mark of fd_ofiles */
+	// set to 1 in fd_init() and fd_copy(), 0 or -1 in fd_free
 	int		fd_refcnt;	/* reference count */
 	u_long		fd_knhashmask;	/* size of fd_knhash */
 	int		fd_freefile;	/* approx. next free file */

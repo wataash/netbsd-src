@@ -770,6 +770,7 @@ mi_switch(lwp_t *l)
 		KASSERT(curlwp == ci->ci_curlwp);
 #endif
 		KASSERTMSG(l == curlwp, "l %p curlwp %p", l, curlwp);
+		// switch 5 end?
 		prevlwp = cpu_switchto(l, newl, returning);
 		ci = curcpu();
 #ifdef MULTIPROCESSOR

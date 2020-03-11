@@ -79,6 +79,7 @@ struct stat;
 struct knote;
 struct uvm_object;
 
+// socketops, ...
 struct fileops {
 	const char *fo_name;
 	int	(*fo_read)	(struct file *, off_t *, struct uio *,
@@ -131,8 +132,10 @@ struct file {
 	union file_data	f_undata;	/* descriptor data, e.g. vnode/socket */
 	LIST_ENTRY(file) f_list;	/* list of active files */
 	kmutex_t	f_lock;		/* lock on structure */
+	// FREAD FWRITE O_NONBLOCK ...
 	int		f_flag;		/* see fcntl.h */
 	u_int		f_marker;	/* traversal marker (sysctl) */
+	// DTYPE_SOCKET ...
 	u_int		f_type;		/* descriptor type */
 	u_int		f_advice;	/* access pattern hint; UVM_ADV_* */
 	u_int		f_count;	/* reference count */

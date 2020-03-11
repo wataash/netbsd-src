@@ -431,6 +431,7 @@ again:
 	w.w_needed = 0 - w.w_given;
 	w.w_where = where;
 
+	// TODO: ozaki-san
 	KERNEL_LOCK_UNLESS_NET_MPSAFE();
 	s = splsoftnet();
 	switch (w.w_op) {
@@ -444,7 +445,11 @@ again:
 		 */
 		if (w.w_op == NET_RT_FLAGS &&
 		    (w.w_arg == 0 || w.w_arg & RTF_LLDATA)) {
+			// arp -a: w.w_arg == 0
+			// ndp -a: w.w_arg == RTF_LLDATA
 			if (af != 0)
+				// arp -a, ndp -a
+				// finally: in.c in_lltable_dump_entry()
 				error = lltable_sysctl_dump(af, &w);
 			else
 				error = EINVAL;

@@ -29,6 +29,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+// #pragma GCC optimize ("O0")
+
 /*
  * Copyright (c) 2004 The FreeBSD Foundation
  * Copyright (c) 2004 Robert Watson
@@ -483,6 +485,13 @@ soinit1(void)
  *
  * => Caller may specify another socket for lock sharing (must not be held).
  * => Returns the new socket without lock held.
+ *
+ * // dom:   sys___socket30() domain
+ * // aso:   *aso = (struct socket *)
+ * // type:  sys___socket30() type
+ * // proto: sys___socket30() protocol
+ * // l:     use l->l_cred, l->l_proc->p_pid
+ * // lockso:
  */
 int
 socreate(int dom, struct socket **aso, int type, int proto, struct lwp *l,
@@ -567,6 +576,13 @@ socreate(int dom, struct socket **aso, int type, int proto, struct lwp *l,
  *
  * => On success, write file descriptor to fdout and return zero.
  * => On failure, return non-zero; *fdout will be undefined.
+ *
+ * // domain: sys___socket30() domain
+ * // sop:    if != NULL, *sop = (struct socket *)
+ * // type:   sys___socket30() type
+ * // proto:  sys___socket30() protocol
+ * // fdout:  *fdout = (int)
+ * // fp->f_socket = (struct socket *)
  */
 int
 fsocreate(int domain, struct socket **sop, int type, int proto, int *fdout)
@@ -883,7 +899,10 @@ sodisconnect(struct socket *so)
  * Returns nonzero on error, timeout or signal; callers
  * must check for short counts if EINTR/ERESTART are returned.
  * Data and control buffers are freed on return.
+ *
+ * // (3) IPv4 dst : (struct sockaddr_in)((struct inpcb*)so->so_pcb)->inp_route.ro_u.ro_dst_sa
  */
+// (3) IPv4 dst : (struct sockaddr_in)((struct inpcb*)so->so_pcb)->inp_route.ro_u.ro_dst_sa
 int
 sosend(struct socket *so, struct sockaddr *addr, struct uio *uio,
 	struct mbuf *top, struct mbuf *control, int flags, struct lwp *l)
@@ -1058,6 +1077,7 @@ sosend(struct socket *so, struct sockaddr *addr, struct uio *uio,
 				so->so_options |= SO_DONTROUTE;
 			if (resid > 0)
 				so->so_state |= SS_MORETOCOME;
+			// (3) IPv4 dst : (struct sockaddr_in)((struct inpcb*)so->so_pcb)->inp_route.ro_u.ro_dst_sa
 			if (flags & MSG_OOB) {
 				error = (*so->so_proto->pr_usrreqs->pr_sendoob)(
 				    so, top, control);

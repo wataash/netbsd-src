@@ -516,6 +516,7 @@
  * arbitrary, might work with older compilers.
  */
 #if __GNUC_PREREQ__(2, 95) || defined(__lint__)
+// INStructioN?
 #define	__insn_barrier()	__asm __volatile("":::"memory")
 #else
 #define	__insn_barrier()	/* */

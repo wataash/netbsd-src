@@ -75,6 +75,7 @@ struct route {
  * retransmission behavior and are included in the routing structure.
  */
 struct rt_metrics {
+	// RTV_MTU, ...
 	uint64_t rmx_locks;	/* Kernel must leave these values alone */
 	uint64_t rmx_mtu;	/* MTU for this path */
 	uint64_t rmx_hopcount;	/* max hops expected */
@@ -150,6 +151,7 @@ struct ortentry {
 	struct	ifnet *rt_ifp;		/* the answer: interface to use */
 };
 
+// rt_flags rtm_flags rti_flags
 #define	RTF_UP		0x1		/* route usable */
 #define	RTF_GATEWAY	0x2		/* destination is a gateway */
 #define	RTF_HOST	0x4		/* host entry (net otherwise) */
@@ -219,9 +221,12 @@ struct	rtstat {
 struct rt_msghdr {
 	u_short	rtm_msglen __align64;
 				/* to skip over non-understood messages */
+	// RTM_VERSION
 	u_char	rtm_version;	/* future binary compatibility */
+	// RTM_ADD, ...
 	u_char	rtm_type;	/* message type */
 	u_short	rtm_index;	/* index for associated ifp */
+	// RTF_UP, ...
 	int	rtm_flags;	/* flags, incl. kern & message, e.g. DONE */
 	int	rtm_addrs;	/* bitmask identifying sockaddrs in msg */
 	pid_t	rtm_pid;	/* identify sender */
@@ -235,8 +240,11 @@ struct rt_msghdr {
 
 #undef __align64
 
+// rtm_version
 #define RTM_VERSION	4	/* Up the ante and ignore older versions */
 
+// rtm_type
+// RouTing Message?
 #define RTM_ADD		0x1	/* Add Route */
 #define RTM_DELETE	0x2	/* Delete Route */
 #define RTM_CHANGE	0x3	/* Change Metrics or flags */
@@ -284,6 +292,7 @@ static const char *rtm_names[] = {
 
 #define	RO_FILTSA_MAX	30	/* maximum number of sockaddrs per filter */
 
+// rmx_locks
 #define RTV_MTU		0x1	/* init or lock _mtu */
 #define RTV_HOPCOUNT	0x2	/* init or lock _hopcount */
 #define RTV_EXPIRE	0x4	/* init or lock _expire */
@@ -296,6 +305,7 @@ static const char *rtm_names[] = {
 #define RTVBITS "\020\1MTU\2HOPCOUNT\3EXPIRE\4RECVPIPE\5SENDPIPE" \
     "\6SSTHRESH\7RTT\010RTTVAR"
 
+// RouTing Address?
 /*
  * Bitmask values for rtm_addr.
  */
@@ -312,6 +322,8 @@ static const char *rtm_names[] = {
 #define RTABITS "\020\1DST\2GATEWAY\3NETMASK\4GENMASK\5IFP\6IFA\7AUTHOR" \
     "\010BRD\011TAG"
 
+// rti_info[]
+// RTA eXtension?
 /*
  * Index offsets for sockaddr array for alternate internal encoding.
  */
@@ -332,7 +344,9 @@ static const char *rtm_names[] = {
 
 struct rt_addrinfo {
 	int	rti_addrs;
+	// RTAX_DST, ...
 	const struct	sockaddr *rti_info[RTAX_MAX];
+	// RTF_UP, ...
 	int	rti_flags;
 	struct	ifaddr *rti_ifa;
 	struct	ifnet *rti_ifp;

@@ -1158,6 +1158,17 @@ vfs_mountroot(void)
 	if (root_device == NULL)
 		panic("vfs_mountroot: root device unknown");
 
+#if 0
+	// @wataash:debug-init 3
+	aprint_normal("vfs_mountroot: loop\n");
+	for (;;) {
+		volatile bool break_ = false;
+		if (break_)
+			break;
+		asm("nop");
+	}
+#endif
+
 	switch (device_class(root_device)) {
 	case DV_IFNET:
 		if (rootdev != NODEV)

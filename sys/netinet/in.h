@@ -1,5 +1,8 @@
 /*	$NetBSD: in.h,v 1.114 2021/02/03 18:13:13 roy Exp $	*/
 
+// mv ~/qc/netbsd-sysroot/usr/include/netinet/in.h ~/qc/netbsd-sysroot/usr/include/netinet/in.h.orig
+// ln -s ~/qc/netbsd/src/sys/netinet/in.h ~/qc/netbsd-sysroot/usr/include/netinet/in.h
+
 /*
  * Copyright (c) 1982, 1986, 1990, 1993
  *	The Regents of the University of California.  All rights reserved.
@@ -72,6 +75,7 @@ typedef __sa_family_t	sa_family_t;
 /*
  * Protocols
  */
+typedef int ipproto_t;
 #define	IPPROTO_IP		0		/* dummy for IP */
 #define	IPPROTO_HOPOPTS		0		/* IP6 hop-by-hop options */
 #define	IPPROTO_ICMP		1		/* control message protocol */

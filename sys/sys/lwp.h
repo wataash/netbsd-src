@@ -540,6 +540,7 @@ KPREEMPT_DISABLE(lwp_t *l)
 
 	KASSERT(l == curlwp);
 	l->l_nopreempt++;
+	// ?
 	__insn_barrier();
 }
 
@@ -549,6 +550,7 @@ KPREEMPT_ENABLE(lwp_t *l)
 
 	KASSERT(l == curlwp);
 	KASSERT(l->l_nopreempt > 0);
+	// ?
 	__insn_barrier();
 	if (--l->l_nopreempt != 0)
 		return;

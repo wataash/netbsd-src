@@ -184,6 +184,7 @@ do {									\
 
 #ifdef __HAVE_SIMPLE_MUTEXES
 
+// owner & 0x ffff ffff ... ffff 0000 0000 (32 bits for i386 (uintptr_t))
 #define	MUTEX_OWNER(owner)						\
 	(owner & MUTEX_THREAD)
 #define	MUTEX_HAS_WAITERS(mtx)						\
@@ -209,8 +210,11 @@ do {									\
 	(mtx)->mtx_owner = MUTEX_THREAD;				\
 } while (/* CONSTCOND */ 0)
 
+// true if MUTEX_BIT_SPIN (0x01) of mtx->mtx_owner is set (if odd number).
+// P: Phase?
 #define	MUTEX_SPIN_P(owner)		\
     (((owner) & MUTEX_BIT_SPIN) != 0)
+// true if MUTEX_BIT_SPIN (0x01) of mtx->mtx_owner is NOT set (if even number).
 #define	MUTEX_ADAPTIVE_P(owner)		\
     (((owner) & MUTEX_BIT_SPIN) == 0)
 
@@ -438,6 +442,8 @@ mutex_oncpu(uintptr_t owner)
  *	the LOCKDEBUG case, mutex_enter() is always aliased here, even if
  *	fast-path stubs are available.  If a mutex_spin_enter() stub is
  *	not available, then it is also aliased directly here.
+ *
+ * // http://d.hatena.ne.jp/akachochin/20100725/1280065700
  */
 void
 mutex_vector_enter(kmutex_t *mtx)
@@ -525,6 +531,7 @@ mutex_vector_enter(kmutex_t *mtx)
 	 * then we stop spinning, and sleep instead.
 	 */
 	for (;;) {
+		// http://d.hatena.ne.jp/akachochin/20100727/1280239735
 		if (!MUTEX_OWNED(owner)) {
 			/*
 			 * Mutex owner clear could mean two things:

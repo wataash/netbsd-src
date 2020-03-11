@@ -1314,6 +1314,12 @@ cpu_intr_init(struct cpu_info *ci)
 #endif
 
 #if NLAPIC > 0
+	// static volatile bool break_ = false;
+	// for (;;) {
+	// 	if (break_)
+	// 		break;
+	// 	asm("nop");
+	// }
 	isp = kmem_zalloc(sizeof(*isp), KM_SLEEP);
 	isp->is_recurse = Xrecurse_lapic_ltimer;
 	isp->is_resume = Xresume_lapic_ltimer;

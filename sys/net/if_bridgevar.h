@@ -130,8 +130,11 @@ struct ifbreq {
 #define	IFBIF_LEARNING		0x01	/* if can learn */
 #define	IFBIF_DISCOVER		0x02	/* if sends packets w/ unknown dest. */
 #define	IFBIF_STP		0x04	/* if participates in spanning tree */
+#define	IFBIF_FORWARD_LLDP	0x40	/* if forwards LLDP packets */
 
 #define	IFBIFBITS	"\020\1LEARNING\2DISCOVER\3STP"
+#undef	IFBIFBITS
+#define	IFBIFBITS	"\020\1LEARNING\2DISCOVER\3STP\4FWDLLDP"
 
 /* BRDGFLUSH */
 #define	IFBF_FLUSHDYN		0x00	/* flush learned addresses only */
@@ -332,6 +335,8 @@ struct bridge_softc {
 };
 
 extern const uint8_t bstp_etheraddr[];
+// TODO: extern
+static const uint8_t blldp_etheraddr[] = { 0x01, 0x80, 0xc2, 0x00, 0x00, 0x0e };
 
 void	bridge_ifdetach(struct ifnet *);
 

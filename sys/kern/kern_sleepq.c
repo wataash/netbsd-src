@@ -348,6 +348,7 @@ sleepq_block(int timo, bool catch_p)
 			callout_schedule(&l->l_timeout_ch, timo);
 		}
 		spc_lock(l->l_cpu);
+		// switch 4
 		mi_switch(l);
 
 		/* The LWP and sleep queue are now unlocked. */

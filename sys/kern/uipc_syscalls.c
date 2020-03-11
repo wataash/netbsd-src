@@ -60,6 +60,9 @@
  *	@(#)uipc_syscalls.c	8.6 (Berkeley) 2/14/95
  */
 
+// Unix Inter Process Communicaiton?
+// uipc: UIPC Argument Pointer?
+
 #include <sys/cdefs.h>
 __KERNEL_RCSID(0, "$NetBSD: uipc_syscalls.c,v 1.200 2020/05/23 23:42:43 ad Exp $");
 
@@ -105,6 +108,9 @@ int
 sys___socket30(struct lwp *l, const struct sys___socket30_args *uap,
     register_t *retval)
 {
+	// domain:   AF_INET ... [SOCK_CLOEXEC] [SOCK_NONBLOCK] [SOCK_NOSIGPIPE]
+	// type:     SOCK_STREAM ...
+	// protocol: IPPROTO_ICMP ...
 	/* {
 		syscallarg(int)	domain;
 		syscallarg(int)	type;
@@ -486,6 +492,7 @@ out:
 	return error;
 }
 
+// UIPC Argument Pointer?
 int
 sys_sendto(struct lwp *l, const struct sys_sendto_args *uap,
     register_t *retval)

@@ -31,4 +31,7 @@ MAN=	ipsec_set_policy.3 ipsec_strerror.3
 MLINKS+=ipsec_set_policy.3 ipsec_get_policylen.3 \
 	ipsec_set_policy.3 ipsec_dump_policy.3
 
+# wataash: sockaddr_snprintf
+# LDADD+= -lutil
+
 .include <bsd.lib.mk>

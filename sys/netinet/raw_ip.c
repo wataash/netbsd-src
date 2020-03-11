@@ -295,6 +295,8 @@ rip_ctlinput(int cmd, const struct sockaddr *sa, void *v)
  * Generate IP header and pass packet to ip_output.
  * Tack on options user may have setup with control call.
  */
+// (3) IPv4 dst : (struct sockaddr_in*)(&inp->inp_route->ro_u.ro_dst_sa)
+//                or satosin(&inp->inp_route->ro_dst)
 int
 rip_output(struct mbuf *m, struct inpcb *inp, struct mbuf *control,
     struct lwp *l)

@@ -456,6 +456,36 @@ ENTRY(start)
 #ifndef XENPV
 	.code32
 
+#if 0
+	// @wataash:debug-init 1 (not work)
+	// gdb source-map doesn't work yet
+	mov $1,%rax
+.Ldebug_init:
+	test $1,%rax
+	// (gdb) set $rax = 0
+	jnz	.Ldebug_init_kernbase
+//0x209000: jmp 0x209000
+//
+//$ gdb99 ~/qc/netbsd/zco.amd64/sys/arch/amd64/compile/GENERIC/netbsd.gdb -ex 'disas /sr start'
+//Dump of assembler code for function start:
+///home/wsh/qc/netbsd/sys/arch/amd64/amd64/locore.S:
+//464		jmp	.Ldebug_init
+//   0xffffffff80209000 <+0>:	eb fe	jmp    0xffffffff80209000 <start>
+//
+//870		/*
+//871		 * We have arrived. There's no need anymore for the identity mapping in
+//872		 * low memory, remove it.
+//873		 */
+//874		movq	$KERNBASE,%r8
+//   0xffffffff802093b6 <+950>:	49 c7 c0 00 00 00 80	mov    $0xffffffff80000000,%r8
+//
+//gdb99 'load ~/qc/netbsd/zco.amd64/sys/arch/amd64/compile/GENERIC/netbsd.gdb -0xffffffff80000000' -ex 'target remote tcp::10834'
+//
+//
+//gdb99 -ex 'target remote tcp::10834' -ex 'load ~/qc/netbsd/zco.amd64/sys/arch/amd64/compile/GENERIC/netbsd.gdb -0xffffffff80000000'
+//(gdb) si ->abort
+#endif
+
 	/* Warm boot */
 	movw	$0x1234,0x472
 
@@ -864,6 +894,16 @@ longmode_hi:
 	 * low memory, remove it.
 	 */
 	movq	$KERNBASE,%r8
+
+#if 0
+	// @wataash:debug-init 2
+	// gdb source-map works from here
+	mov $1,%rax
+.Ldebug_init_kernbase:
+	test $1,%rax
+	// (gdb) set $rax = 0
+	jnz	.Ldebug_init_kernbase
+#endif
 
 #if L2_SLOT_KERNBASE > 0
 	movq	$(NKL2_KIMG_ENTRIES+1),%rcx

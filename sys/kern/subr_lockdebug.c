@@ -88,6 +88,7 @@ typedef struct lockdebug {
 	uintptr_t	ld_initaddr;
 	uint16_t	ld_shares;
 	uint16_t	ld_cpu;
+	// LD_LOCKED(0x01) LD_SLEEPER(0x02)
 	uint8_t		ld_flags;
 	uint8_t		ld_shwant;	/* advisory */
 	uint8_t		ld_exwant;	/* advisory */
@@ -446,6 +447,7 @@ lockdebug_wantlock(const char *func, size_t line,
 	bool recurse;
 	int s;
 
+	// TODO: remove
 	(void)shared;
 	recurse = false;
 

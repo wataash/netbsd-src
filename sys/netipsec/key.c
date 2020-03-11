@@ -7198,6 +7198,7 @@ key_api_acquire(struct socket *so, struct mbuf *m,
 	return key_sendup_mbuf(so, m, KEY_SENDUP_REGISTERED);
 }
 
+// typo sabd_supported -> sadb_supported
 /*
  * SADB_REGISTER processing.
  * If SATYPE_UNSPEC has been passed as satype, only return sabd_supported.
@@ -7240,6 +7241,8 @@ key_api_register(struct socket *so, struct mbuf *m,
 	}
 
 	newreg->so = so;
+	// TODO: cb?
+	// ((struct keycb *)so)->kp_registered++;
 	((struct keycb *)sotorawcb(so))->kp_registered++;
 
 	/* add regnode to key_misc.reglist. */

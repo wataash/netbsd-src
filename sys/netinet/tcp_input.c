@@ -29,6 +29,8 @@
  * SUCH DAMAGE.
  */
 
+// #pragma GCC optimize ("O0")
+
 /*
  *      @(#)COPYRIGHT   1.1 (NRL) 17 January 1995
  *

@@ -226,6 +226,7 @@ static int wm_watchdog_timeout = WM_WATCHDOG_TIMEOUT;
 #define	WM_TXQUEUELEN_MAX_82547	16
 #define	WM_TXQUEUELEN(txq)	((txq)->txq_num)
 #define	WM_TXQUEUELEN_MASK(txq)	(WM_TXQUEUELEN(txq) - 1)
+// GC?
 #define	WM_TXQUEUE_GC(txq)	(WM_TXQUEUELEN(txq) / 8)
 #define	WM_NTXDESC_82542	256
 #define	WM_NTXDESC_82544	4096
@@ -370,6 +371,7 @@ struct wm_txqueue {
 	int txq_free;			/* number of free Tx descriptors */
 	int txq_next;			/* next ready Tx descriptor */
 
+	// s?
 	int txq_sfree;			/* number of free Tx jobs */
 	int txq_snext;			/* next free Tx job */
 	int txq_sdirty;			/* dirty Tx jobs */
@@ -7872,6 +7874,7 @@ wm_transmit_locked(struct ifnet *ifp, struct wm_txqueue *txq)
 	wm_send_common_locked(ifp, txq, true);
 }
 
+// txq necessary?
 static void
 wm_send_common_locked(struct ifnet *ifp, struct wm_txqueue *txq,
     bool is_transmit)

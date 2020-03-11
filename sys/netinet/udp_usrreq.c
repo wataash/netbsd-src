@@ -29,6 +29,8 @@
  * SUCH DAMAGE.
  */
 
+// #pragma GCC optimize ("O0")
+
 /*
  * Copyright (c) 1982, 1986, 1988, 1990, 1993, 1995
  *	The Regents of the University of California.  All rights reserved.
@@ -763,6 +765,8 @@ end:
 	return error;
 }
 
+// (3) ip_src, ip_dst inp->inp_ip
+// (3) IPv4 dst: (struct sockaddr_in*)(&inp->inp_route->ro_u.ro_dst_sa)
 int
 udp_output(struct mbuf *m, struct inpcb *inp, struct mbuf *control,
     struct lwp *l)
@@ -847,6 +851,8 @@ udp_output(struct mbuf *m, struct inpcb *inp, struct mbuf *control,
 	UDP_STATINC(UDP_STAT_OPACKETS);
 
 	flags |= inp->inp_socket->so_options & (SO_DONTROUTE|SO_BROADCAST);
+	// (3) IPv4 dst : (struct sockaddr_in*)(&ro->ro_u.ro_dst_sa)
+	//                or satosin(&ro->ro_dst)
 	return ip_output(m, inp->inp_options, ro, flags, pktopts.ippo_imo, inp);
 
  release:

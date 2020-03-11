@@ -899,6 +899,8 @@ bridge_ioctl_add(struct bridge_softc *sc, void *arg)
 
 	bif->bif_ifp = ifs;
 	bif->bif_flags = IFBIF_LEARNING | IFBIF_DISCOVER;
+	(void)bif->bif_flags;
+	bif->bif_flags = IFBIF_LEARNING | IFBIF_DISCOVER | IFBIF_FORWARD_LLDP;
 	bif->bif_priority = BSTP_DEFAULT_PORT_PRIORITY;
 	bif->bif_path_cost = BSTP_DEFAULT_PATH_COST;
 	PSLIST_ENTRY_INIT(bif, bif_next);
@@ -1969,6 +1971,7 @@ bridge_input(struct ifnet *ifp, struct mbuf *m)
 	int bound;
 	DECLARE_LOCK_VARIABLE;
 
+	// ?
 	KASSERT(!cpu_intr_p());
 
 	if (__predict_false(sc == NULL) ||
@@ -1998,6 +2001,14 @@ bridge_input(struct ifnet *ifp, struct mbuf *m)
 		else
 			m->m_flags |= M_MCAST;
 	}
+
+
+	/*
+	 * 01:80:c2:00:00:0*
+	 *                 0 stp
+	 *                 3 Nearest bridge
+	 *                 e non-TPMR bridge
+	 */
 
 	/*
 	 * A 'fast' path for packets addressed to interfaces that are
@@ -2054,6 +2065,23 @@ out:
 		curlwp_bindx(bound);
 		return;
 	}
+
+	/* Tap off 802.1AB packets; they do not get forwarded. */
+	if (memcmp(eh->ether_dhost, bstp_etheraddr, ETHER_ADDR_LEN) == 0) {
+		bridge_release_member(sc, bif, &psref);
+		curlwp_bindx(bound);
+		return;
+	}
+
+	/* LLDP */
+	// TODO
+//	if (bif->bif_flags & IFBIF_FORWARD_LLDP &&
+//	    memcmp(eh->ether_dhost, bstp_etheraddr, ETHER_ADDR_LEN) == 0) {
+//		bstp_input(sc, bif, m);
+//		bridge_release_member(sc, bif, &psref);
+//		curlwp_bindx(bound);
+//		return;
+//	}
 
 	/*
 	 * A normal switch would discard the packet here, but that's not what

@@ -29,6 +29,8 @@
  * SUCH DAMAGE.
  */
 
+// #pragma GCC optimize ("O0")
+
 /*-
  * Copyright (c) 1997, 1998, 2005, 2006 The NetBSD Foundation, Inc.
  * All rights reserved.
@@ -523,8 +525,10 @@ tcp_attach(struct socket *so, int proto)
 	KASSERT(solocked(so));
 
 	family = so->so_proto->pr_domain->dom_family;
+	// expect so->so_pcb == NULL
 	switch (family) {
 	case PF_INET:
+		// expect NULL
 		inp = sotoinpcb(so);
 #ifdef INET6
 		in6p = NULL;
@@ -533,6 +537,7 @@ tcp_attach(struct socket *so, int proto)
 #ifdef INET6
 	case PF_INET6:
 		inp = NULL;
+		// expect NULL
 		in6p = sotoin6pcb(so);
 		break;
 #endif

@@ -197,6 +197,11 @@ struct	accept_filter_arg {
 /*
  * Address families.
  */
+#ifdef __clang__
+#pragma clang diagnostic ignored "-Wtypedef-redefinition"
+#endif
+// tdef:begin
+typedef __uint8_t	__sa_family_t;	// sys/socket.h
 #define	AF_UNSPEC	0		/* unspecified */
 #define	AF_LOCAL	1		/* local to host */
 #define	AF_UNIX		AF_LOCAL	/* backward compatibility */
@@ -247,6 +252,7 @@ struct	accept_filter_arg {
 #define	AF_CAN		35
 #define	AF_ETHER	36
 #define	AF_MAX		37
+// tdef:end
 
 /*
  * Structure used by kernel to store most
@@ -454,11 +460,21 @@ struct kinfo_pcb {
  *	Fifth: type of info, defined below
  *	Sixth: flag(s) to mask with for NET_RT_FLAGS
  */
+// tesc - sysctl
+// sbin/route/
+// sbin/routed/table.c
 #define	NET_RT_DUMP		1	/* dump; may limit to a.f. */
+// arp -a; ndp -a
 #define	NET_RT_FLAGS		2	/* by flags, e.g. RESOLVING */
 #define	NET_RT_OOOIFLIST	3	/* old NET_RT_IFLIST (pre 1.5) */
 #define	NET_RT_OOIFLIST		4	/* old NET_RT_IFLIST (pre-64bit time) */
 #define	NET_RT_OIFLIST		5	/* old NET_RT_IFLIST (pre 8.0) */
+// lib/libc/net/getifaddrs.c
+// sbin/route/route.c
+// sbin/routed/if.c
+// usr.bin/netstat/if.c
+// usr.sbin/route6d/route6d.c
+// usr.sbin/rwhod/rwhod.c
 #define	NET_RT_IFLIST		6	/* survey interface list */
 
 #endif /* _NETBSD_SOURCE */

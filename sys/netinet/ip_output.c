@@ -29,6 +29,8 @@
  * SUCH DAMAGE.
  */
 
+// #pragma GCC optimize ("O0")
+
 /*
  * Copyright (c) 1998 The NetBSD Foundation, Inc.
  * All rights reserved.
@@ -225,6 +227,7 @@ ip_if_output(struct ifnet * const ifp, struct mbuf * const m,
  * The mbuf chain containing the packet will be freed.
  * The mbuf opt, if present, will not be freed.
  */
+// (3) ip_src, ip_dst : mtod(m0, struct ip *) or (struct ip*)(m0->m_hdr.mh_data)
 int
 ip_output(struct mbuf *m0, struct mbuf *opt, struct route *ro, int flags,
     struct ip_moptions *imo, struct inpcb *inp)
@@ -259,6 +262,7 @@ ip_output(struct mbuf *m0, struct mbuf *opt, struct route *ro, int flags,
 
 	MCLAIM(m, &ip_tx_mowner);
 
+	// TODO here
 	KASSERT((m->m_flags & M_PKTHDR) != 0);
 	KASSERT((m->m_pkthdr.csum_flags & (M_CSUM_TCPv6|M_CSUM_UDPv6)) == 0);
 	KASSERT((m->m_pkthdr.csum_flags & (M_CSUM_TCPv4|M_CSUM_UDPv4)) !=
