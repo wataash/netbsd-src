@@ -568,7 +568,14 @@ struct qat_sym_cookie {
 	} u;
 
 	/* should be 64-byte aligned */
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wgnu-variable-sized-type-not-at-end"
 	struct buffer_list_desc qsc_buf_list;
+#pragma clang diagnostic pop
+#else /* __clang__ */
+	struct buffer_list_desc qsc_buf_list;
+#endif /* __clang__ */
 	struct flat_buffer_desc qsc_flat_bufs[QAT_MAXSEG]; /* should be here */
 
 	bus_dmamap_t *qsc_self_dmamap;	/* self DMA mapping and
