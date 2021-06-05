@@ -99,6 +99,7 @@ assert_sleepable(void)
 	if (cpu_softintr_p()) {
 		reason = "softint";
 	}
+	// why not pserialize_in_read_section() ?
 	if (!pserialize_not_in_read_section()) {
 		reason = "pserialize";
 	}

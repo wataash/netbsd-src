@@ -1021,6 +1021,7 @@ if_ipsec_set_tunnel(struct ifnet *ifp,
 	in_port_t nsport = 0, ndport = 0;
 	int error;
 
+	// 無いと何が起きる？
 	error = encap_lock_enter();
 	if (error)
 		return error;
@@ -1038,6 +1039,7 @@ if_ipsec_set_tunnel(struct ifnet *ifp,
 #ifdef INET
 	case AF_INET:
 		nsport = satosin(src)->sin_port;
+		// ??
 		/*
 		 * avoid confuse SP when NAT-T disabled,
 		 * e.g.
@@ -1138,6 +1140,7 @@ if_ipsec_set_tunnel(struct ifnet *ifp,
 	if_ipsec_copy_variant(nullvar, ovar);
 	if_ipsec_clear_config(nullvar);
 	psref_target_init(&nullvar->iv_psref, iv_psref_class);
+	// ?
 	/*
 	 * (2-3) Swap variant include its SPs.
 	 */
@@ -1882,6 +1885,7 @@ if_ipsec_replace_sp(struct ipsec_softc *sc, struct ipsec_variant *ovar,
 	return error;
 }
 
+// ?
 /*
  * ipsec_variant and its SPs update API.
  *
