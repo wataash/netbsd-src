@@ -208,6 +208,8 @@ extern void *_binary_splash_image_end;
 
 #include <dev/clock_subr.h>
 
+#include <kern/wataash_sandbox.h>
+
 #include <secmodel/secmodel.h>
 
 #include <ufs/ufs/quota.h>
@@ -275,6 +277,17 @@ main(void)
 #endif
 	CPU_INFO_ITERATOR cii;
 	struct cpu_info *ci;
+
+	// @wataash:debug-init:v6 c1_main
+#if 0
+	for (;;) {
+		volatile bool break_ = false;
+		__asm__("nop"); // gdb break condition: break_ = 1
+		if (break_)
+			break;
+		__asm__("nop");
+	}
+#endif
 
 #ifdef DIAGNOSTIC
 	/*
@@ -681,6 +694,8 @@ main(void)
 	 */
 	cpu_rootconf();
 	cpu_dumpconf();
+
+	wataash_sandbox();
 
 	/* Mount the root file system. */
 	do {

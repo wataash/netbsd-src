@@ -88,6 +88,16 @@ db_trap(int type, int code)
 		db_dot = PC_REGS(DDB_REGS);
 		db_print_loc_and_inst(db_dot);
 
+		if (!bkpt && !watchpt) {
+			extern int db_onpanic;
+			if (db_onpanic) {
+				db_printf("it's a panic?\n");
+			} else {
+				db_printf("\"Stopped\" likely means you are doing QEMU-debugging, and timer-interrupts occurred while breaking; assuming you don't want kernel to go into ddb, return immediately here\n");
+				return;
+			}
+		}
+
 		db_command_loop();
 	}
 

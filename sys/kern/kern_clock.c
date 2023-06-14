@@ -335,7 +335,9 @@ hardclock(struct clockframe *frame)
 		    atomic_load_relaxed(&hardclock_ticks) + 1);
 		tc_ticktock();
 	}
-
+#ifndef _RUMPKERNEL
+	void wataash_timer_utils(void); wataash_timer_utils(); // [wataash_timer_utils]
+#endif // _RUMPKERNEL
 	/*
 	 * Make sure the CPUs and timecounter are making progress.
 	 */
@@ -550,3 +552,27 @@ sysctl_kern_clockrate(SYSCTLFN_ARGS)
 	node.sysctl_data = &clkinfo;
 	return (sysctl_lookup(SYSCTLFN_CALL(&node)));
 }
+
+// [wataash_timer_utils]
+// てきとうなところでgdbで停止:
+//   hlt している
+//   #0  x86_stihlt () at /home/wsh/qc/netbsd/sys/arch/amd64/amd64/cpufunc.S:379
+//   #1  0xffffffff8032dcfe in acpicpu_md_cstate_enter (method=1, state=1) at /home/wsh/qc/netbsd/sys/arch/x86/acpi/acpi_cpu_md.c:431
+//   #2  0xffffffff80328d18 in acpicpu_cstate_idle_enter (sc=0xffff9403b0490000, state=1) at /home/wsh/qc/netbsd/sys/dev/acpi/acpi_cpu_cstate.c:764
+//   #3  0xffffffff80328a31 in acpicpu_cstate_idle () at /home/wsh/qc/netbsd/sys/dev/acpi/acpi_cpu_cstate.c:703
+//   #4  0xffffffff808ce63b in idle_loop (dummy=0xffff9403ec0cd040) at /home/wsh/qc/netbsd/sys/kern/kern_idle.c:84
+//   #5  0xffffffff8020b327 in lwp_trampoline () at /home/wsh/qc/netbsd/sys/arch/amd64/amd64/locore.S:1468
+//   #6  0x0000000000000000 in ?? ()
+// step in:
+//   タイマー割り込み
+//   #0  bus_space_read_stream_4 () at /home/wsh/qc/netbsd/sys/arch/amd64/amd64/busfunc.S:88
+//   #1  0xffffffff8038b4a2 in hpet_get_timecount (tc=0xffff9403b0363f70) at /home/wsh/qc/netbsd/sys/dev/ic/hpet.c:165
+//   #2  0xffffffff80919a54 in tc_delta (th=0xffffffff80ed31e0 <th7>) at /home/wsh/qc/netbsd/sys/kern/kern_tc.c:308
+//   #3  0xffffffff8091a2aa in tc_windup () at /home/wsh/qc/netbsd/sys/kern/kern_tc.c:784
+//   #4  0xffffffff8091b4b2 in tc_ticktock () at /home/wsh/qc/netbsd/sys/kern/kern_tc.c:1347
+//   #5  0xffffffff808aea07 in hardclock (frame=0xffffd90054d282a8) at /home/wsh/qc/netbsd/sys/kern/kern_clock.c:333
+//     ここで呼び出してみることにする
+//   #6  0xffffffff80364557 in lapic_clockintr (arg=0x0, frame=0xffffd90054d282a8) at /home/wsh/qc/netbsd/sys/arch/x86/x86/lapic.c:579
+//   #7  0xffffffff8020b661 in Xresume_lapic_ltimer () at /home/wsh/qc/netbsd/sys/arch/amd64/amd64/vector.S:247
+//   #8  0x0000000000000004 in ?? ()
+// TODO: timer割り込みでなくcalloutにする

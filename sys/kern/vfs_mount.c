@@ -1242,6 +1242,24 @@ vfs_mountroot(void)
 	if (root_device == NULL)
 		panic("vfs_mountroot: root device unknown");
 
+	// @wataash:debug-init:v6 c3_mount_halt
+	// probably you don't need this -- use -snapshot.
+#if 0
+	void kern_reboot(int, char *) __dead;
+#define	RB_HALT		0x00000008	/* don't reboot, just halt */
+#define	RB_POWERDOWN	(RB_HALT|0x800) /* turn power off (or at least halt) */
+	kern_reboot(RB_POWERDOWN, NULL);
+	// or loop:
+	aprint_normal("vfs_mountroot: loop\n");
+	for (;;) {
+		volatile bool break_ = false;
+		__asm__("nop"); // gdb break condition: break_ = 1
+		if (break_)
+			break;
+		__asm__("nop");
+	}
+#endif
+
 	switch (device_class(root_device)) {
 	case DV_IFNET:
 		if (rootdev != NODEV)

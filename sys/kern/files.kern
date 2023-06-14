@@ -1,6 +1,9 @@
 #	$NetBSD: files.kern,v 1.61 2024/12/22 23:24:20 riastradh Exp $
 
 #
+
+file	kern/wataash_sandbox.c	kern
+
 # kernel sources
 #
 define	kern:	cprng_fast, machdep, uvm

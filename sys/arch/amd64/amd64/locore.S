@@ -469,6 +469,14 @@ ENTRY(start)
 #ifndef XENPV
 	.code32
 
+	// @wataash:debug-init:v5 asm0_start (cannot break)
+#if 0
+	xorl %eax,%eax
+wataash_debug_init_asm0:
+	testl %eax,%eax // (gdb): cannot break (source-map is not correct yet)
+	jz	wataash_debug_init_asm0
+#endif
+	// 2025-05-20 Tue ↓ added in upstream; もしかしたら debug-init はこの命令の下じゃないとだめかも
 	getstarttsc
 
 #ifdef SELFRELOC
@@ -889,6 +897,16 @@ longmode_hi:
 	 * low memory, remove it.
 	 */
 	movq	$KERNBASE,%r8
+
+	// @wataash:debug-init:v6 asm1
+	// @ref:gdb-watch
+	// gdb source-map works from here
+#if 0
+	xorq %rax,%rax
+wataash_debug_init_asm1:
+	testq %rax,%rax // (gdb): break wataash_debug_init_asm1 if $rax = 1 (not $rax == 1)
+	jz	wataash_debug_init_asm1
+#endif
 
 #if L2_SLOT_KERNBASE > 0
 	movq	$(NKL2_KIMG_ENTRIES+1),%rcx

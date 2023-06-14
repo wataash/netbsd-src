@@ -192,6 +192,23 @@ char *bootspec;
 void
 setroot(device_t bootdv, int bootpartition)
 {
+	// @ref:qc-netbsd-pxe-wd0-2
+	// 2023-01-19 https://github.com/IIJ-NetBSD/netbsd-src/commit/5b3c445b6c80ae4209913fd6d91ea69f053d4944 とコンフリクトしてるか調べてない
+	// TODO: debug
+	//
+	// rootspec: NULL
+	// rootfstype: "?"
+	// boothowto: RB_AUTOBOOT (0)
+	printf("================================================\n");
+	if (rootspec == NULL) {
+		printf("setroot(): assuming you're booting via QEMU-PXE, and it's going to try to mount NFS root although you want to mount -hda disk; so change rootspec: NULL -> \"wd0\"\n");
+		// rootspec = "wd0";
+		rootspec = "dk1";
+	} else {
+		printf("setroot(): rootspec != NULL; how do you do that?\n");
+	}
+	printf("================================================\n");
+
 	time_t waitend;
 
 	/*

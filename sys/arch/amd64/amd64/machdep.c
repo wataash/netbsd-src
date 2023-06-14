@@ -1728,6 +1728,17 @@ init_x86_64(paddr_t first_avail)
 	extern paddr_t local_apic_pa;
 #endif
 
+	// @wataash:debug-init:v6 c0_init_x86_64
+#if 0
+	for (;;) {
+		volatile bool break_ = false;
+		__asm__("nop"); // gdb break condition: break_ = 1
+		if (break_)
+			break;
+		__asm__("nop");
+	}
+#endif
+
 	KASSERT(first_avail % PAGE_SIZE == 0);
 
 #ifdef XENPV

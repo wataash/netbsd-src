@@ -20,6 +20,25 @@
 
 include 	"arch/amd64/conf/std.amd64"
 
+# makeoptions PROF="-pg"
+# options GPROF
+
+options 	CONS_OVERRIDE	# Always use above! independent of boot info  # w/o this: consinfo = lookup_bootinfo(BTINFO_CONSOLE); // consinfo->devname
+options 	CONSDEVNAME="\"com\"",CONADDR=0x3f8,CONSPEED=115200
+options 	DDB_ONPANIC=1	# see also sysctl(7): `ddb.onpanic'
+options 	DEBUG		# expensive debugging checks/support
+options 	IPSEC_DEBUG	# debug for IP security
+options 	LOCKDEBUG	# expensive locking checks/support
+options	DB_MAX_LINE=-1
+options	DB_MAX_WIDTH=-1
+options	INTRDEBUG
+options	MBUFTRACE
+options	NO_X86_ASLR	# @ref:qc-netbsd-NO_X86_ASLR
+qat*	at pci? dev ? function ?	# Intel QuickAssist
+#options	FAULT
+
+#
+
 options 	INCLUDE_CONFIG_FILE	# embed config file in kernel binary
 
 #ident		"GENERIC-$Revision: 1.616 $"

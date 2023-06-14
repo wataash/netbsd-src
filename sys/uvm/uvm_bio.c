@@ -32,7 +32,7 @@
 /*
  * uvm_bio.c: buffered i/o object mapping cache
  */
-
+#pragma GCC diagnostic ignored "-Wstack-usage=" // [err1]
 #include <sys/cdefs.h>
 __KERNEL_RCSID(0, "$NetBSD: uvm_bio.c,v 1.128 2023/04/09 09:00:56 riastradh Exp $");
 
@@ -1142,3 +1142,25 @@ ubchash_stats(struct hashstat_sysctl *hs, bool fill)
 
 	return 0;
 }
+
+/*
+[err1]
+
+#   compile  GENERIC/uvm_bio.o
+/home/wsh/qc/netbsd/zgt.amd64/bin/x86_64--netbsd-gcc -Wno-stack-protector -mcmodel=kernel -mno-red-zone -mno-mmx -mno-sse -mno-avx -msoft-float -mindirect-branch=thunk -mindirect-branch-register -ffreestanding -fno-zero-initialized-in-bss -fno-delete-null-pointer-checks -g -O2 -fno-omit-frame-pointer -fstack-protector -Wstack-protector --param ssp-buffer-size=1 -fstack-usage -Wstack-usage=3584 -fno-strict-aliasing -fno-common -Wno-stack-protector -std=gnu99 -Werror -Wall -Wno-main -Wno-format-zero-length -Wpointer-arith -Wmissing-prototypes -Wstrict-prototypes -Wold-style-definition -Wswitch -Wshadow -Wcast-qual -Wwrite-strings -Wno-unreachable-code -Wno-pointer-sign -Wno-attributes -Wno-type-limits -Wextra -Wno-unused-parameter -Wold-style-definition -Wno-sign-compare -Wno-address-of-packed-member -Walloca -O0 -ggdb3 --sysroot=/home/wsh/qc/netbsd/zgd.amd64 -Damd64 -Dx86_64 -I. -I/home/wsh/qc/netbsd/sys/external/mit/xen-include-public/dist/ -I/home/wsh/qc/netbsd/sys/external/bsd/libnv/dist -I/home/wsh/qc/netbsd/sys/external/bsd/acpica/dist -I/home/wsh/qc/netbsd/sys/../common/lib/libx86emu -I/home/wsh/qc/netbsd/sys/../common/lib/libc/misc -I/home/wsh/qc/netbsd/sys/../common/include -I/home/wsh/qc/netbsd/sys/arch -I/home/wsh/qc/netbsd/sys -nostdinc -DCOMPAT_UTILS -D__XEN_INTERFACE_VERSION__=0x3020a -DCONS_OVERRIDE -DCONSDEVNAME="com" -DCONADDR=0x3f8 -DCONSPEED=115200 -DDEBUG -DDIAGNOSTIC -DCOMPAT_44 -D_KERNEL -D_KERNEL_OPT -std=gnu99 -I/home/wsh/qc/netbsd/sys/lib/libkern/../../../common/lib/libc/quad -I/home/wsh/qc/netbsd/sys/lib/libkern/../../../common/lib/libc/string -I/home/wsh/qc/netbsd/sys/lib/libkern/../../../common/lib/libc/arch/x86_64/string -I/home/wsh/qc/netbsd/sys/lib/libkern/../../../common/lib/libc/arch/x86_64/atomic -I/home/wsh/qc/netbsd/sys/lib/libkern/../../../common/lib/libc/hash/sha3 -D_FORTIFY_SOURCE=2 -I/home/wsh/qc/netbsd/sys/external/isc/atheros_hal/dist -I/home/wsh/qc/netbsd/sys/external/isc/atheros_hal/ic -I/home/wsh/qc/netbsd/sys/../common/include -I/home/wsh/qc/netbsd/sys/external/bsd/acpica/dist/include -I/home/wsh/qc/netbsd/sys/external/bsd/libnv/dist -c /home/wsh/qc/netbsd/sys/uvm/uvm_bio.c -o uvm_bio.o
+/home/wsh/qc/netbsd/sys/uvm/uvm_bio.c: In function 'ubc_fault':
+/home/wsh/qc/netbsd/sys/uvm/uvm_bio.c:308:1: error: stack usage might be unbounded [-Werror=stack-usage=]
+  308 | ubc_fault(struct uvm_faultinfo *ufi, vaddr_t ign1, struct vm_page **ign2,
+      | ^~~~~~~~~
+/home/wsh/qc/netbsd/sys/uvm/uvm_bio.c: In function 'ubc_uiomove':
+/home/wsh/qc/netbsd/sys/uvm/uvm_bio.c:740:1: error: stack usage might be unbounded [-Werror=stack-usage=]
+  740 | ubc_uiomove(struct uvm_object *uobj, struct uio *uio, vsize_t todo, int advice,
+      | ^~~~~~~~~~~
+/home/wsh/qc/netbsd/sys/uvm/uvm_bio.c: In function 'ubc_zerorange':
+/home/wsh/qc/netbsd/sys/uvm/uvm_bio.c:807:1: error: stack usage might be unbounded [-Werror=stack-usage=]
+  807 | ubc_zerorange(struct uvm_object *uobj, off_t off, size_t len, int flags)
+      | ^~~~~~~~~~~~~
+cc1: all warnings being treated as errors
+
+*** Failed target: uvm_bio.o
+ */
